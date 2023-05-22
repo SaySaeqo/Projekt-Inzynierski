@@ -54,7 +54,7 @@ class QRScannerActivity : AppCompatActivity() {
             codeScanner.startPreview()
         }
 
-
+        //test123123
     }
 
     private fun getPermission(permission: String){
