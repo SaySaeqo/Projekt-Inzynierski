@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CloudLib</string>
+    <string name="qrscanner_hint">Scan QR code to find your data</string>
+</resources>
