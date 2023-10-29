@@ -3,13 +3,8 @@ package pl.edu.pg.cloudlib
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import pl.edu.pg.cloudlib.databinding.ActivityListBinding
-import pl.edu.pg.cloudlib.databinding.ActivityQrscannerBinding
 import pl.edu.pg.cloudlib.databinding.ListRowViewBinding
 
 /**
