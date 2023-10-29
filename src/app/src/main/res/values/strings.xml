@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">CloudLib</string>
     <string name="qrscanner_hint">Scan QR code to find your data</string>
-    <string name="page_title">List</string>
     <string name="filter">Filter</string>
     <string name="content_description_filter">Button to filter items in the list.</string>
     <string name="more">More\n</string>
@@ -9,6 +8,9 @@
     <string name="title_activity_menu">MenuActivity</string>
     <string name="open_nav">Open Navigation Drawer test</string>
     <string name="close_nav">Close Navigation Drawer test</string>
+    <string name="list_page_title">List</string>
+    <string name="qr_scanner_page_title">Scanner</string>
+    <string name="exhibit_page_title">Exhibit view</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>

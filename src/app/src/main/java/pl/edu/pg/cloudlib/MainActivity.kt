@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import pl.edu.pg.cloudlib.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -19,10 +21,14 @@ class MainActivity : AppCompatActivity() {
 
         binding.navView.setNavigationItemSelectedListener {
             when(it.itemId){
-                R.id.nav_list -> supportFragmentManager.beginTransaction()
-                    .replace(binding.fragmentContainer.id, ListFragment()).commit()
-                R.id.nav_scanner -> supportFragmentManager.beginTransaction()
-                    .replace(binding.fragmentContainer.id, QRScannerFragment()).commit()
+                R.id.nav_list -> supportFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    replace<ListFragment>(binding.fragmentContainer.id)
+                }
+                R.id.nav_scanner -> supportFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    replace<QRScannerFragment>(binding.fragmentContainer.id)
+                }
             }
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             true
@@ -35,9 +41,19 @@ class MainActivity : AppCompatActivity() {
         toggle.syncState()
 
         if (savedInstanceState == null){
-            supportFragmentManager.beginTransaction()
-                .replace(binding.fragmentContainer.id, ListFragment()).commit()
-            binding.navView.setCheckedItem(binding.navView.id)
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace<ListFragment>(binding.fragmentContainer.id)
+            }
+            binding.navView.setCheckedItem(R.id.nav_list)
+        }
+
+        supportFragmentManager.setFragmentResultListener(QRScannerFragment.BUNDLE_KEY, this)
+        { _, bundle ->
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace<ExhibitFragment>(binding.fragmentContainer.id, args = bundle)
+            }
         }
     }
 }
