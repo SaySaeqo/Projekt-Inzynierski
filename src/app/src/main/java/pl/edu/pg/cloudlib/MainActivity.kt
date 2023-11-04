@@ -1,7 +1,6 @@
 package pl.edu.pg.cloudlib
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -47,7 +46,6 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.commit {
                 setReorderingAllowed(true)
                 replace<ListFragment>(binding.fragmentContainer.id)
-                addToBackStack(null)
             }
             binding.navView.setCheckedItem(R.id.nav_list)
         }
@@ -62,9 +60,5 @@ class MainActivity : AppCompatActivity() {
             binding.navView.setCheckedItem(0)
         }
 
-    }
-
-    companion object{
-        private const val TAG = "MAIN"
     }
 }
