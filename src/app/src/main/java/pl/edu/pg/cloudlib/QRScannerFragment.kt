@@ -60,7 +60,6 @@ class QRScannerFragment : Fragment() {
         }
 
         val sv = binding.scannerView
-
         sv.setOnClickListener{
             codeScanner.startPreview()
             Toast.makeText(act.baseContext,"Starting preview", Toast.LENGTH_SHORT).show()
