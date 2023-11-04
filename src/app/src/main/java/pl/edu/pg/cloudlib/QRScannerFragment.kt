@@ -88,7 +88,8 @@ class QRScannerFragment : Fragment() {
     }
 
     private fun sendMessage(message: String){
-        setFragmentResult(BUNDLE_KEY, bundleOf(BUNDLE_KEY to message))
+        setFragmentResult(ExhibitFragment.BUNDLE_KEY,
+            bundleOf(ExhibitFragment.BUNDLE_KEY to message))
     }
 
     override fun onResume() {
@@ -103,7 +104,6 @@ class QRScannerFragment : Fragment() {
 
     companion object {
         private const val TAG = "QRScanner"
-        const val BUNDLE_KEY = "QRScannerResult"
     }
 
 

@@ -15,40 +15,4 @@
         android:layout_height="100dp"
         android:id="@+id/first"
         />
-    <pl.edu.pg.cloudlib.ListRowView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        />
-    <pl.edu.pg.cloudlib.ListRowView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        />
-    <pl.edu.pg.cloudlib.ListRowView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        />
-    <pl.edu.pg.cloudlib.ListRowView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        />
-    <pl.edu.pg.cloudlib.ListRowView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        />
-    <pl.edu.pg.cloudlib.ListRowView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        />
-    <pl.edu.pg.cloudlib.ListRowView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        />
-    <pl.edu.pg.cloudlib.ListRowView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        />
-    <pl.edu.pg.cloudlib.ListRowView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        />
 </LinearLayout>

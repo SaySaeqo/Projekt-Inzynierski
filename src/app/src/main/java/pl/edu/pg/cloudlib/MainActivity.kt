@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             binding.navView.setCheckedItem(R.id.nav_list)
         }
 
-        supportFragmentManager.setFragmentResultListener(QRScannerFragment.BUNDLE_KEY, this)
+        supportFragmentManager.setFragmentResultListener(ExhibitFragment.BUNDLE_KEY, this)
         { _, bundle ->
             supportFragmentManager.commit {
                 setReorderingAllowed(true)
@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
             }
             binding.navView.setCheckedItem(0)
         }
+
     }
 
     companion object{

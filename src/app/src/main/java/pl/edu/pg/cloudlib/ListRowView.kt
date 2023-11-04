@@ -26,6 +26,8 @@ class ListRowView : FrameLayout {
         get() = binding.image
         private set(value) {}
 
+    var fragmentMessage: String? = null
+
     constructor(context: Context) : super(context) {
         init(null, 0)
     }

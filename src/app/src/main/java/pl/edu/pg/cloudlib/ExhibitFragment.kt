@@ -19,7 +19,11 @@ class ExhibitFragment : Fragment() {
 
         activity?.title = getString(R.string.exhibit_page_title)
 
-        binding.textView.text = arguments?.getString(QRScannerFragment.BUNDLE_KEY) ?: "Error: no message arrived"
+        binding.textView.text = arguments?.getString(BUNDLE_KEY) ?: "Error: no message arrived"
         return binding.root
+    }
+
+    companion object{
+        const val BUNDLE_KEY = "ExhibitMessage"
     }
 }
