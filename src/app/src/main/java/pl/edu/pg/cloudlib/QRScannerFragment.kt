@@ -1,35 +1,44 @@
 package pl.edu.pg.cloudlib
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import com.budiyev.android.codescanner.AutoFocusMode
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 import com.google.zxing.BarcodeFormat
-import pl.edu.pg.cloudlib.databinding.ActivityQrscannerBinding
+import pl.edu.pg.cloudlib.databinding.FragmentQrscannerBinding
 
 
-class QRScannerActivity : AppCompatActivity() {
+class QRScannerFragment : Fragment() {
 
-    private lateinit var binding: ActivityQrscannerBinding
+    private lateinit var binding: FragmentQrscannerBinding
     private lateinit var codeScanner: CodeScanner
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityQrscannerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentQrscannerBinding.inflate(inflater,container,false)
+
+        activity?.title = getString(R.string.qr_scanner_page_title)
 
         getPermission(Manifest.permission.CAMERA)
-        codeScanner = CodeScanner(this, binding.scannerView).apply {
+
+        val act = requireActivity()
+        codeScanner = CodeScanner(act.baseContext, binding.scannerView).apply {
             // parameters
             camera = CodeScanner.CAMERA_BACK
             formats = listOf(BarcodeFormat.QR_CODE)
@@ -39,31 +48,37 @@ class QRScannerActivity : AppCompatActivity() {
             isFlashEnabled = false
             // callbacks
             decodeCallback = DecodeCallback {
-                runOnUiThread{
+                act.runOnUiThread{
                     sendMessage(it.text)
                 }
             }
             errorCallback = ErrorCallback {
-                runOnUiThread{
+                act.runOnUiThread{
                     Log.e(TAG,"Camera initialization error: ${it.message}")
                 }
             }
         }
 
-        binding.scannerView.setOnClickListener{
+        val sv = binding.scannerView
+        sv.setOnClickListener{
             codeScanner.startPreview()
+            Toast.makeText(act.baseContext,"Starting preview", Toast.LENGTH_SHORT).show()
         }
+
+        return binding.root
     }
 
+
     private fun getPermission(permission: String){
-        if (ContextCompat.checkSelfPermission(baseContext, permission)
+        if (ContextCompat.checkSelfPermission(requireContext(), permission)
             != PackageManager.PERMISSION_GRANTED) {
             val requestPermissionLauncher = registerForActivityResult(
-                RequestPermission()) { isGranted ->
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted ->
                 if (isGranted) {
                     // success
                 } else {
-                    Toast.makeText(baseContext,
+                    Toast.makeText(context,
                         "Permission request denied",
                         Toast.LENGTH_SHORT).show()
                 }
@@ -73,9 +88,8 @@ class QRScannerActivity : AppCompatActivity() {
     }
 
     private fun sendMessage(message: String){
-        val intent = Intent(this, LibElementActivity::class.java)
-        intent.putExtra("message", message)
-        startActivity(intent)
+        setFragmentResult(ExhibitFragment.BUNDLE_KEY,
+            bundleOf(ExhibitFragment.BUNDLE_KEY to message))
     }
 
     override fun onResume() {
@@ -91,4 +105,6 @@ class QRScannerActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "QRScanner"
     }
+
+
 }

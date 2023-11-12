@@ -19,10 +19,7 @@
         android:theme="@style/Theme.CloudLib"
         tools:targetApi="33">
         <activity
-            android:name=".LibElementActivity"
-            android:exported="false" />
-        <activity
-            android:name=".QRScannerActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
