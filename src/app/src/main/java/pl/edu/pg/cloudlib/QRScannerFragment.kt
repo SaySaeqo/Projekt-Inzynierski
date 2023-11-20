@@ -2,6 +2,7 @@ package pl.edu.pg.cloudlib
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -49,7 +51,7 @@ class QRScannerFragment : Fragment() {
             // callbacks
             decodeCallback = DecodeCallback {
                 act.runOnUiThread{
-                    sendMessage(it.text)
+                    sendMessage(it.text.toUri())
                 }
             }
             errorCallback = ErrorCallback {
@@ -87,9 +89,19 @@ class QRScannerFragment : Fragment() {
         }
     }
 
-    private fun sendMessage(message: String){
-        setFragmentResult(ExhibitFragment.BUNDLE_KEY,
-            bundleOf(ExhibitFragment.BUNDLE_KEY to message))
+    private fun sendMessage(uri: Uri){
+        if (uri.host != "saysaeqo.pythonanywhere.com" || uri.path != "/cloudlib") {
+            Toast.makeText(context,
+                "Invalid QR code",
+                Toast.LENGTH_SHORT).show()
+            codeScanner.releaseResources()
+            return
+        }
+        val id = uri.getQueryParameter("id")
+        if(id != null){
+            setFragmentResult(ExhibitFragment.BUNDLE_KEY,
+                bundleOf(ExhibitFragment.BUNDLE_KEY to id))
+        }
     }
 
     override fun onResume() {

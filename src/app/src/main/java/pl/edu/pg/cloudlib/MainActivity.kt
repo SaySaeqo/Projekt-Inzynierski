@@ -1,8 +1,13 @@
 package pl.edu.pg.cloudlib
 
+import android.content.Intent
+import android.net.Uri
+import android.nfc.Tag
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
@@ -60,5 +65,24 @@ class MainActivity : AppCompatActivity() {
             binding.navView.setCheckedItem(0)
         }
 
+        val action: String? = intent?.action
+        val data: Uri? = intent?.data
+
+        if (action == Intent.ACTION_VIEW && data != null) {
+            val id = data.getQueryParameter("id")
+            if (id != null) {
+                supportFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    replace<ExhibitFragment>(binding.fragmentContainer.id,
+                        args = bundleOf(ExhibitFragment.BUNDLE_KEY to id))
+                    addToBackStack(null)
+                }
+                binding.navView.setCheckedItem(0)
+            }
+        }
+    }
+
+    companion object {
+        const val TAG = "MainActivity"
     }
 }
