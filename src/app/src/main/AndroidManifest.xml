@@ -27,15 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<!--        <activity-->
-<!--            android:name=".DBActivity"-->
-<!--            android:exported="true">-->
-<!--            &lt;!&ndash;<intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>&ndash;&gt;-->
-<!--        </activity>-->
     </application>
 
 </manifest>
