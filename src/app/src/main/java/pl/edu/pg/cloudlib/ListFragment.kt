@@ -1,6 +1,7 @@
 package pl.edu.pg.cloudlib
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import pl.edu.pg.cloudlib.databinding.FragmentListBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,6 +26,9 @@ private const val ARG_PARAM2 = "param2"
 class ListFragment : Fragment() {
 
     private lateinit var binding: FragmentListBinding
+
+    private val dbCollectionName = "exhibits"
+    private var db = Firebase.firestore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +54,43 @@ class ListFragment : Fragment() {
                 }
         }
 
+        val db1 = DBSingleton.getInstance()
+        db1.add("dodane", "opis dodanego")
+
+        db.collection(dbCollectionName)
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    addRow(document.data["name"].toString(), document.data["description"].toString(), "dbExampleMessage")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(DBSingleton.TAG, "Error getting documents.", exception)
+            }
+
         return binding.root
+    }
+
+    fun addRow(title: String, subtitle: String, fragmentMessage: String) {
+        val row = ListRowView(requireContext())
+        row.title = title
+        row.subtitle = subtitle
+        row.imageView.setImageDrawable(null)
+        row.fragmentMessage = fragmentMessage
+
+        row.setOnClickListener {_ ->
+            setFragmentResult(ExhibitFragment.BUNDLE_KEY,
+                bundleOf(ExhibitFragment.BUNDLE_KEY to row.fragmentMessage))
+        }
+
+        binding.root.addView(row)
+
+//        binding.root.forEach {
+//            if (it is ListRowView)
+//                it.setOnClickListener {_ ->
+//                    setFragmentResult(ExhibitFragment.BUNDLE_KEY,
+//                        bundleOf(ExhibitFragment.BUNDLE_KEY to it.fragmentMessage))
+//                }
+//        }
     }
 }
