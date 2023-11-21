@@ -13,6 +13,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import pl.edu.pg.cloudlib.databinding.FragmentListBinding
 import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
+import pl.edu.pg.cloudlib.list.ListRowView
 
 /**
  * A simple [Fragment] subclass.
