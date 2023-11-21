@@ -1,29 +1,37 @@
 package pl.edu.pg.cloudlib
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.os.SystemClock.sleep
 import android.util.Log
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.*
 
 
-class DBActivity : AppCompatActivity() {
-    val dbCollectionName = "exhibits"
-    var db = Firebase.firestore;
+class DBSingleton private constructor() {
+    private val db = Firebase.firestore
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    companion object {
+        private val dbCollectionName = "exhibits"
+        private var instance = DBSingleton()
+        const val TAG = "DataBase"
+        fun getInstance() : DBSingleton{
+            return instance;
+        }
+    }
+
+    init {
+        exhibitTest()
+    }
+
+    fun exhibitTest() {
 
         //userTest()
         add("costam", "opis")
-        sleep(1000)
+        //sleep(1000)
         delete("costam")
-        sleep(1000)
+        //sleep(1000)
         delete("costam")
-        sleep(4000)
+        //sleep(4000)
         getAll()
     }
 
@@ -74,10 +82,6 @@ class DBActivity : AppCompatActivity() {
                 Log.w(TAG, "Error getting documents.", exception)
             }
 
-    }
-
-    companion object {
-        private const val TAG = "DataBase"
     }
 
     fun add(name: String, description: String)
