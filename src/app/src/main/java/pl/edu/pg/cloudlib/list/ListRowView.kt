@@ -1,10 +1,12 @@
-package pl.edu.pg.cloudlib
+package pl.edu.pg.cloudlib.list
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
+import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.ListRowViewBinding
 
 /**
@@ -47,13 +49,6 @@ class ListRowView : FrameLayout {
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         binding = ListRowViewBinding.inflate(LayoutInflater.from(context))
         addView(binding.root)
-
-        // Load attributes
-        val a = context.obtainStyledAttributes(
-            attrs, R.styleable.ListRowView, defStyle, 0
-        )
-
-        a.recycle()
     }
 
 }

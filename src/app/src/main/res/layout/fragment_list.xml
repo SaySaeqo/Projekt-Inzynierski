@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ListFragment"
+    tools:context=".list.ListFragment"
     android:layout_margin="30dp"
     android:orientation="vertical"
     android:divider="@drawable/space"
     android:showDividers="middle"
     >
-    <pl.edu.pg.cloudlib.ListRowView
+    <pl.edu.pg.cloudlib.list.ListRowView
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:id="@+id/first"

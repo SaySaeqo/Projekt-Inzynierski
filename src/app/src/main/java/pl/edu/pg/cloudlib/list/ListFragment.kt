@@ -1,4 +1,4 @@
-package pl.edu.pg.cloudlib
+package pl.edu.pg.cloudlib.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +8,9 @@ import androidx.core.os.bundleOf
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.FragmentListBinding
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
 
 /**
  * A simple [Fragment] subclass.
@@ -43,7 +40,8 @@ class ListFragment : Fragment() {
         binding.root.forEach {
             if (it is ListRowView)
                 it.setOnClickListener {_ ->
-                    setFragmentResult(ExhibitFragment.BUNDLE_KEY,
+                    setFragmentResult(
+                        ExhibitFragment.BUNDLE_KEY,
                         bundleOf(ExhibitFragment.BUNDLE_KEY to it.fragmentMessage))
                 }
         }

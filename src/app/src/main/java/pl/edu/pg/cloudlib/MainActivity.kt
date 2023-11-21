@@ -2,9 +2,7 @@ package pl.edu.pg.cloudlib
 
 import android.content.Intent
 import android.net.Uri
-import android.nfc.Tag
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
@@ -12,6 +10,11 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import pl.edu.pg.cloudlib.databinding.ActivityMainBinding
+import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
+import pl.edu.pg.cloudlib.exhibit.SectionFragment
+import pl.edu.pg.cloudlib.exhibit.SectionWidgetView
+import pl.edu.pg.cloudlib.list.ListFragment
+import pl.edu.pg.cloudlib.scanner.QRScannerFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -62,7 +65,16 @@ class MainActivity : AppCompatActivity() {
                 replace<ExhibitFragment>(binding.fragmentContainer.id, args = bundle)
                 addToBackStack(null)
             }
-            binding.navView.setCheckedItem(0)
+            binding.navView.setCheckedItem(R.id.menu_none)
+        }
+        supportFragmentManager.setFragmentResultListener(SectionFragment.BUNDLE_KEY, this)
+        { _, bundle ->
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace<SectionFragment>(binding.fragmentContainer.id, args = bundle)
+                addToBackStack(null)
+            }
+            binding.navView.setCheckedItem(R.id.menu_none)
         }
 
         val action: String? = intent?.action
@@ -77,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                         args = bundleOf(ExhibitFragment.BUNDLE_KEY to id))
                     addToBackStack(null)
                 }
-                binding.navView.setCheckedItem(0)
+                binding.navView.setCheckedItem(R.id.menu_none)
             }
         }
     }

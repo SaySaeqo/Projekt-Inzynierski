@@ -1,4 +1,4 @@
-package pl.edu.pg.cloudlib
+package pl.edu.pg.cloudlib.scanner
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -21,7 +21,9 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 import com.google.zxing.BarcodeFormat
+import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.FragmentQrscannerBinding
+import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
 
 
 class QRScannerFragment : Fragment() {
@@ -99,7 +101,8 @@ class QRScannerFragment : Fragment() {
         }
         val id = uri.getQueryParameter("id")
         if(id != null){
-            setFragmentResult(ExhibitFragment.BUNDLE_KEY,
+            setFragmentResult(
+                ExhibitFragment.BUNDLE_KEY,
                 bundleOf(ExhibitFragment.BUNDLE_KEY to id))
         }
     }
