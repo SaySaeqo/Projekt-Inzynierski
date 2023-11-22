@@ -1,4 +1,4 @@
-package pl.edu.pg.cloudlib
+package pl.edu.pg.cloudlib.list
 
 import android.os.Bundle
 import android.util.Log
@@ -11,9 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import pl.edu.pg.cloudlib.DBSingleton
+import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.FragmentListBinding
 import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
-import pl.edu.pg.cloudlib.list.ListRowView
 
 /**
  * A simple [Fragment] subclass.
@@ -46,8 +47,10 @@ class ListFragment : Fragment() {
         binding.root.forEach {
             if (it is ListRowView)
                 it.setOnClickListener {_ ->
-                    setFragmentResult(ExhibitFragment.BUNDLE_KEY,
-                        bundleOf(ExhibitFragment.BUNDLE_KEY to it.fragmentMessage))
+                    setFragmentResult(
+                        ExhibitFragment.BUNDLE_KEY,
+                        bundleOf(ExhibitFragment.BUNDLE_KEY to it.fragmentMessage)
+                    )
                 }
         }
 
@@ -77,7 +80,8 @@ class ListFragment : Fragment() {
 
         row.setOnClickListener {_ ->
             setFragmentResult(ExhibitFragment.BUNDLE_KEY,
-                bundleOf(ExhibitFragment.BUNDLE_KEY to row.fragmentMessage))
+                bundleOf(ExhibitFragment.BUNDLE_KEY to row.fragmentMessage)
+            )
         }
 
         binding.root.addView(row)

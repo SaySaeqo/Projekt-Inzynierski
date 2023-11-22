@@ -12,7 +12,6 @@ import androidx.fragment.app.replace
 import pl.edu.pg.cloudlib.databinding.ActivityMainBinding
 import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
 import pl.edu.pg.cloudlib.exhibit.SectionFragment
-import pl.edu.pg.cloudlib.exhibit.SectionWidgetView
 import pl.edu.pg.cloudlib.list.ListFragment
 import pl.edu.pg.cloudlib.scanner.QRScannerFragment
 
