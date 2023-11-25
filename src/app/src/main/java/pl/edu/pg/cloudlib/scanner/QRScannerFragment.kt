@@ -76,9 +76,7 @@ class QRScannerFragment : Fragment() {
     private fun getPermission(permission: String){
         if (ContextCompat.checkSelfPermission(requireContext(), permission)
             != PackageManager.PERMISSION_GRANTED) {
-            val requestPermissionLauncher = registerForActivityResult(
-                ActivityResultContracts.RequestPermission()
-            ) { isGranted ->
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 if (isGranted) {
                     // success
                 } else {
@@ -86,8 +84,7 @@ class QRScannerFragment : Fragment() {
                         "Permission request denied",
                         Toast.LENGTH_SHORT).show()
                 }
-            }
-            requestPermissionLauncher.launch(permission)
+            }.launch(permission)
         }
     }
 
