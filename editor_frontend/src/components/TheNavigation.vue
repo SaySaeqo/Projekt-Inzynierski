@@ -2,10 +2,10 @@
   <nav>
     <ul>
       <li>
-        <router-link to="/">Home</router-link>
+        <router-link to="/">List</router-link>
       </li>
       <li>
-        <router-link to="/about">About</router-link>
+        <router-link to="/login">Login</router-link>
       </li>
     </ul>
   </nav>
@@ -14,19 +14,28 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-export default defineComponent({
-  name: "TheNavigation",
-});
+export default defineComponent({});
 </script>
 
 <style lang="scss" scoped>
+@use "../styles/colors";
+
 ul {
-  display: flex;
   margin: 0;
   padding: 0;
   list-style: none;
+  display: flex;
 }
 li {
-  margin: 1em;
+  display: flex;
+}
+a {
+  padding: 1em;
+  flex: 1;
+  text-decoration: none;
+  color: black;
+}
+a:hover {
+  background-color: colors.$hover;
 }
 </style>

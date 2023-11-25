@@ -16,7 +16,6 @@ import { defineComponent } from "vue";
 import ListItem from "./ListItem.vue";
 
 export default defineComponent({
-  name: "TheList",
   components: {
     ListItem,
   },

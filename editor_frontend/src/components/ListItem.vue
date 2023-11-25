@@ -1,11 +1,13 @@
 <template>
-  <li @click="handleClick" class="item">
-    <div>
-      <p>{{ id }}</p>
-    </div>
-    <div>
-      <p>{{ name }}</p>
-    </div>
+  <li class="item">
+    <router-link :to="'/exhibit/' + id">
+      <div>
+        <p>{{ id }}</p>
+      </div>
+      <div>
+        <p>{{ name }}</p>
+      </div>
+    </router-link>
   </li>
 </template>
 
@@ -13,28 +15,33 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "ListItem",
   props: {
     name: String,
     id: Number,
-  },
-
-  methods: {
-    handleClick() {
-      console.log(`click ${this.id}:${this.name}`);
-      //   this.$emit("click", this.id);
-    },
   },
 });
 </script>
 
 <style lang="scss" scoped>
+@use "../styles/colors";
+
 li {
   display: flex;
 
+  a {
+    display: flex;
+    flex: 1;
+    text-decoration: none;
+    color: black;
+  }
+
+  a:hover {
+    background-color: colors.$hover;
+  }
+
   div {
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     flex: 2;
     border: 1px solid black;

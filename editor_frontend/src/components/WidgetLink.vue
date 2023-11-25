@@ -1,0 +1,21 @@
+<template>
+  <div>
+    <p>link</p>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import { useRoute } from "vue-router";
+
+export default defineComponent({});
+</script>
+
+<style lang="scss" scoped>
+div {
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

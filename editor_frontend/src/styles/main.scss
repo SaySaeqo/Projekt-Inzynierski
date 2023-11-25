@@ -1,0 +1,16 @@
+body,
+html,
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  display: flex;
+  flex: 1;
+}
+
+button {
+  padding: 0.5em;
+  border: 1px solid black;
+  background-color: #eee;
+}
+button:hover {
+  background-color: #ccc;
+}

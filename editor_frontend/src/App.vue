@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <TheNavigation />
-    <TheList />
+    <router-view />
   </div>
 </template>
 
@@ -11,7 +11,6 @@ import TheList from "./components/TheList.vue";
 import TheNavigation from "./components/TheNavigation.vue";
 
 export default defineComponent({
-  name: "App",
   components: {
     TheList,
     TheNavigation,
