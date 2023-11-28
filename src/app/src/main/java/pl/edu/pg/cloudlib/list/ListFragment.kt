@@ -1,4 +1,4 @@
-package pl.edu.pg.cloudlib
+package pl.edu.pg.cloudlib.list
 
 import android.os.Bundle
 import android.util.Log
@@ -11,12 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import pl.edu.pg.cloudlib.DBSingleton
+import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.FragmentListBinding
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
 
 /**
  * A simple [Fragment] subclass.
@@ -49,8 +47,10 @@ class ListFragment : Fragment() {
         binding.root.forEach {
             if (it is ListRowView)
                 it.setOnClickListener {_ ->
-                    setFragmentResult(ExhibitFragment.BUNDLE_KEY,
-                        bundleOf(ExhibitFragment.BUNDLE_KEY to it.fragmentMessage))
+                    setFragmentResult(
+                        ExhibitFragment.BUNDLE_KEY,
+                        bundleOf(ExhibitFragment.BUNDLE_KEY to it.fragmentMessage)
+                    )
                 }
         }
 
@@ -80,7 +80,8 @@ class ListFragment : Fragment() {
 
         row.setOnClickListener {_ ->
             setFragmentResult(ExhibitFragment.BUNDLE_KEY,
-                bundleOf(ExhibitFragment.BUNDLE_KEY to row.fragmentMessage))
+                bundleOf(ExhibitFragment.BUNDLE_KEY to row.fragmentMessage)
+            )
         }
 
         binding.root.addView(row)
