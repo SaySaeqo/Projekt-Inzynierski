@@ -11,9 +11,10 @@
   </main>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from "vue";
 import ListItem from "./ListItem.vue";
+import DataService from "../services/DataService";
 
 export default defineComponent({
   components: {
@@ -21,14 +22,14 @@ export default defineComponent({
   },
   computed: {
     items() {
-      return [
-        { id: 1, name: "Intel" },
-        { id: 2, name: "AMD" },
-        { id: 3, name: "Nvidia" },
-        { id: 4, name: "Apple" },
-        { id: 5, name: "Microsoft" },
-        { id: 6, name: "Google" },
-      ];
+      let _exhibits = [];
+      DataService.getAll()
+        .orderBy("name", "asc")
+        .forEach((exhibit) =>
+          _exhibits.push({ id: exhibit.id, name: exhibit.name })
+        );
+
+      return _exhibits;
     },
   },
 });
