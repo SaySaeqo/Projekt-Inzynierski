@@ -25,7 +25,7 @@ export default {
   methods: {
     submitForm() {
       // Handle form submission here
-      console.log(`Username: ${this.username}, Password: ${this.password}`);
+      //console.log(`Username: ${this.username}, Password: ${this.password}`);
     },
   },
 };
