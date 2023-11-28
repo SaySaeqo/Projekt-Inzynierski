@@ -55,7 +55,7 @@ class ListFragment : Fragment() {
         }
 
         val db1 = DBSingleton.getInstance()
-        db1.add("dodane", "opis dodanego")
+        //db1.add("dodane", "opis dodanego")
 
         db.collection(dbCollectionName)
             .get()
