@@ -12,26 +12,46 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, onUpdated } from "vue";
 import ListItem from "./ListItem.vue";
-import DataService from "../services/DataService";
+import { query, collection, getDocs, getFirestore } from "firebase/firestore";
+import db from "../initfirestore.js";
 
 export default defineComponent({
   components: {
     ListItem,
   },
-  computed: {
-    items() {
-      let _exhibits = [];
-      DataService.getAll()
-        .orderBy("name", "asc")
-        .forEach((exhibit) =>
-          _exhibits.push({ id: exhibit.id, name: exhibit.name })
-        );
+  data() {
+    return {
+      items: [],
+    };
+  },
+  created() {
+    this.getExhibit();
+  },
+  methods: {
+    async getExhibit() {
+      let db1 = getFirestore(db);
+      const querySnap = await getDocs(query(collection(db1, "exhibits")));
 
-      return _exhibits;
+      // add each doc to 'countries' array
+      querySnap.forEach((doc) => {
+        this.items.push({ id: doc.id, name: doc.data().name });
+      });
     },
   },
+  /*computed: {
+    items() {
+      return [
+        { id: "1", name: "Intel" },
+        { id: 2, name: "AMD" },
+        { id: 3, name: "Nvidia" },
+        { id: 4, name: "Apple" },
+        { id: 5, name: "Microsoft" },
+        { id: 6, name: "Google" }
+      ];
+    },
+  },*/
 });
 </script>
 

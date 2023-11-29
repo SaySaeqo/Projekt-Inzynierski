@@ -1,23 +1,47 @@
-import firebase from "../firebase";
+//import coll from "@/initfirestore";
+import { getFirestore } from "firebase/firestore";
+import firebaseApp from "@/initfirestore";
+import { query, collection, getDocs } from "firebase/firestore"
 
-const db = firebase.collection("/exhibits");
+//let db = getFirestore(firebaseApp);
+const db = getFirestore(firebaseApp);
 
 class DataService {
-  getAll() {
-    return db;
+  async getAll() {
+    let sth = [{ id: "1", name: "1" }];
+    const querySnap = await getDocs(query(collection(db, "exhibits")));
+    /*db.collection("exhibits")
+      .get()
+      .then((query) => {
+        query.forEach((doc) => {
+          sth.push({
+            id: doc.data().id,
+            name: doc.data().name,
+          });
+        });
+      });*/
+
+    querySnap.forEach((doc) => {
+      sth.push({
+        id: doc.data().id,
+        name: doc.data().name,
+      });
+    });
+
+    return sth;
   }
 
-  create(exhibit) {
-    return db.add(exhibit);
+  /*create(exhibit) {
+    return coll.add(exhibit);
   }
 
   update(id, value) {
-    return db.doc(id).update(value);
+    return coll.doc(id).update(value);
   }
 
   delete(id) {
-    return db.doc(id).delete();
-  }
+    return coll.doc(id).delete();
+  }*/
 }
 
 export default new DataService();
