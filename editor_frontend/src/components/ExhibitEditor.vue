@@ -15,11 +15,11 @@
         <button @click="addLink">Add Link</button>
       </div>
       <div class="preview">
-        <template v-for="widget in exhibit.widgets" :key="widget.data">
-          <WidgetGallery v-if="widget.type === 'gallery'" />
-          <WidgetSection v-if="widget.type === 'paragraph'" />
-          <WidgetLink v-if="widget.type === 'link'" />
-        </template>
+        <BaseWidget v-for="widget in exhibit.widgets" :key="widget.data"
+          :exhibit="exhibit" :widget="widget"
+          @up="moveWidgetUp(widget)"
+          @down="moveWidgetDown(widget)" 
+          @remove="removeWidget(widget)" />
       </div>
     </section>
   </main>
@@ -27,46 +27,70 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useRoute } from "vue-router";
 import WidgetGallery from "./WidgetGallery.vue";
 import WidgetSection from "./WidgetSection.vue";
 import WidgetLink from "./WidgetLink.vue";
-import {Exhibit} from "@/models/Exhibit";
+import {Exhibit, Widget} from "@/models/Exhibit";
+import BaseWidget from "./BaseWidget.vue";
 
 export default defineComponent({
   components: {
     WidgetGallery,
     WidgetSection,
     WidgetLink,
-  },
+    BaseWidget
+},
   data() {
     return {
-      exhibit: new Exhibit()
+      exhibit: new Exhibit(),
+      generatedId: 0,
     };
   },
   methods: {
     addGallery() {
       this.exhibit.widgets.push({
+        id: this.generatedId++,
         type: "gallery",
         data: ""
       });
     },
     addParagraph() {
       this.exhibit.widgets.push({
+        id: this.generatedId++,
         type: "paragraph",
         data: ""
       });
     },
     addLink() {
       this.exhibit.widgets.push({
+        id: this.generatedId++,
         type: "link",
         data: ""
       });
+    },
+    moveWidgetUp(widget: Widget) {
+      let index = this.exhibit.widgets.indexOf(widget);
+      if (index > 0) {
+        this.exhibit.widgets.splice(index, 1);
+        this.exhibit.widgets.splice(index - 1, 0, widget);
+      }
+    },
+    moveWidgetDown(widget: Widget) {
+      let index = this.exhibit.widgets.indexOf(widget);
+      if (index < this.exhibit.widgets.length - 1) {
+        this.exhibit.widgets.splice(index, 1);
+        this.exhibit.widgets.splice(index + 1, 0, widget);
+      }
+    },
+    removeWidget(widget: Widget) {
+      let index = this.exhibit.widgets.indexOf(widget);
+      this.exhibit.widgets.splice(index, 1);
     },
   },
   beforeMount() {
     // let id = useRoute().params.id
     // this.exhibit = fromDb(id);
+    this.generatedId = this.exhibit.widgets.length;
   },
 
 });

@@ -16,10 +16,12 @@ export class Exhibit {
 }
 
 export class Widget {
+    id: number;
     type: string;
     data: string;
 
     constructor() {
+        this.id = 0;
         this.type = '';
         this.data = '';
     }
