@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <WidgetGallery v-if="widget.type === 'gallery'" :exhibit="exhibit" :data="widget.data" />
     <WidgetSection v-if="widget.type === 'paragraph'" :exhibit="exhibit" :data="widget.data" />
     <WidgetLink v-if="widget.type === 'link'" :exhibit="exhibit" :data="widget.data" />
@@ -52,6 +52,12 @@ WidgetGallery, WidgetSection, WidgetLink {
 .control {
     display: flex;
     flex-direction: column;
-    align-self: flex-end;
+    align-self: stretch;
+    flex-basis: auto;
+}
+
+.container {
+    display: flex;
+    flex: 1;
 }
 </style>
