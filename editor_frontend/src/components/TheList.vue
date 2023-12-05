@@ -8,6 +8,7 @@
         :name="item.name"
         @remove="remove(item)"
       />
+      <button @click="add">ADD</button>
     </ul>
   </main>
 </template>
@@ -46,6 +47,12 @@ export default defineComponent({
     },
     remove(item: Exhibit) {
       this.items.splice(this.items.indexOf(item), 1);
+    },
+    add() {
+      let exhibit = new Exhibit();
+      exhibit.id = "0";
+      exhibit.name = "New Exhibit";
+      this.items.push(exhibit);
     },
   },
   /*computed: {
