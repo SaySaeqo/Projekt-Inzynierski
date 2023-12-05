@@ -6,16 +6,18 @@
         :key="item.id"
         :id="item.id"
         :name="item.name"
+        @remove="remove(item)"
       />
     </ul>
   </main>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, onUpdated } from "vue";
 import ListItem from "./ListItem.vue";
 import { query, collection, getDocs, getFirestore } from "firebase/firestore";
-import db from "../initfirestore.js";
+import db from "../initfirestore";
+import { Exhibit } from "@/models/Exhibit";
 
 export default defineComponent({
   components: {
@@ -23,7 +25,7 @@ export default defineComponent({
   },
   data() {
     return {
-      items: [],
+      items: [] as Exhibit[],
     };
   },
   created() {
@@ -36,8 +38,14 @@ export default defineComponent({
 
       // add each doc to 'countries' array
       querySnap.forEach((doc) => {
-        this.items.push({ id: doc.id, name: doc.data().name });
+        let exhibit = new Exhibit();
+        exhibit.id = doc.id;
+        exhibit.name = doc.data().name;
+        this.items.push(exhibit);
       });
+    },
+    remove(item: Exhibit) {
+      this.items.splice(this.items.indexOf(item), 1);
     },
   },
   /*computed: {

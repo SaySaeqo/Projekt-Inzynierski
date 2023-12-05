@@ -8,6 +8,7 @@
         <p>{{ name }}</p>
       </div>
     </router-link>
+    <button @click="$emit('remove')">REMOVE</button>
   </li>
 </template>
 
@@ -17,7 +18,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
   props: {
     name: String,
-    id: Number,
+    id: String,
   },
 });
 </script>

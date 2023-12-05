@@ -4,9 +4,9 @@
     <WidgetSection v-if="widget.type === 'paragraph'" :exhibit="exhibit" :data="widget.data" />
     <WidgetLink v-if="widget.type === 'link'" :exhibit="exhibit" :data="widget.data" />
     <div class="control">
-        <button @click="up">UP</button>
-        <button @click="down">DOWN</button>
-        <button @click="remove">REMOVE</button>
+        <button @click="$emit('up')">UP</button>
+        <button @click="$emit('down')">DOWN</button>
+        <button @click="$emit('remove')">REMOVE</button>
     </div>
   </div>
 </template>
@@ -30,17 +30,6 @@ export default defineComponent({
         },
     },
     components: { WidgetGallery, WidgetSection, WidgetLink },
-    methods: {
-        up() {
-            this.$emit("up");
-        },
-        down() {
-            this.$emit("down");
-        },
-        remove() {
-            this.$emit("remove");
-        },
-    },
 });
 </script>
 

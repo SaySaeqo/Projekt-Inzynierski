@@ -32,6 +32,7 @@ import WidgetSection from "./WidgetSection.vue";
 import WidgetLink from "./WidgetLink.vue";
 import {Exhibit, Widget} from "@/models/Exhibit";
 import BaseWidget from "./BaseWidget.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   components: {
@@ -88,8 +89,9 @@ export default defineComponent({
     },
   },
   beforeMount() {
-    // let id = useRoute().params.id
+    let id = useRoute().params.id;
     // this.exhibit = fromDb(id);
+    this.exhibit.id = id as string;
     this.generatedId = this.exhibit.widgets.length;
   },
 
