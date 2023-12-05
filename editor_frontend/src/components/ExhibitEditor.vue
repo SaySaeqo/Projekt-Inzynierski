@@ -26,6 +26,7 @@ import { useRoute } from "vue-router";
 import WidgetGallery from "./WidgetGallery.vue";
 import WidgetSection from "./WidgetSection.vue";
 import WidgetLink from "./WidgetLink.vue";
+import {Exhibit} from "@/models/Exhibit";
 
 export default defineComponent({
   components: {
@@ -33,19 +34,20 @@ export default defineComponent({
     WidgetSection,
     WidgetLink,
   },
-  computed: {
-    exhibit() {
-      return {
-        id: useRoute().params.id,
-        name: "Intel",
-        description:
-          "Intel Corporation is an American multinational corporation and technology company headquartered in Santa Clara, California, in Silicon Valley.",
-        image:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Intel_logo_%282006-2020%29.svg/1200px-Intel_logo_%282006-2020%29.svg.png",
-        link: "https://en.wikipedia.org/wiki/Intel",
-      };
+  data() {
+    return {
+      exhibit: new Exhibit()
+    };
+  },
+  methods: {
+    addGallery() {
     },
   },
+  beforeMount() {
+    // let id = useRoute().params.id
+    // this.exhibit = fromDb(id);
+  },
+
 });
 </script>
 
