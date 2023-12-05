@@ -10,11 +10,16 @@
     <section>
       <div class="tools">
         <h1>Tools:</h1>
+        <button @click="addGallery">Add Gallery</button>
+        <button @click="addParagraph">Add Paragraph</button>
+        <button @click="addLink">Add Link</button>
       </div>
       <div class="preview">
-        <WidgetGallery />
-        <WidgetSection />
-        <WidgetLink />
+        <template v-for="widget in exhibit.widgets" :key="widget.data">
+          <WidgetGallery v-if="widget.type === 'gallery'" />
+          <WidgetSection v-if="widget.type === 'paragraph'" />
+          <WidgetLink v-if="widget.type === 'link'" />
+        </template>
       </div>
     </section>
   </main>
@@ -41,6 +46,22 @@ export default defineComponent({
   },
   methods: {
     addGallery() {
+      this.exhibit.widgets.push({
+        type: "gallery",
+        data: ""
+      });
+    },
+    addParagraph() {
+      this.exhibit.widgets.push({
+        type: "paragraph",
+        data: ""
+      });
+    },
+    addLink() {
+      this.exhibit.widgets.push({
+        type: "link",
+        data: ""
+      });
     },
   },
   beforeMount() {

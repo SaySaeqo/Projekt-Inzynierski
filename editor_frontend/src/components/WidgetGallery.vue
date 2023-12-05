@@ -5,10 +5,21 @@
 </template>
 
 <script lang="ts">
+import { Exhibit } from "@/models/Exhibit";
 import { defineComponent } from "vue";
-import { useRoute } from "vue-router";
 
-export default defineComponent({});
+export default defineComponent({
+  props: {
+    exhibit: {
+      type: Exhibit,
+      required: true,
+    },
+    data: {
+      type: String,
+      required: true,
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

@@ -6,9 +6,20 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useRoute } from "vue-router";
+import { Exhibit } from "@/models/Exhibit";
 
-export default defineComponent({});
+export default defineComponent({
+  props: {
+    exhibit: {
+      type: Exhibit,
+      required: true,
+    },
+    data: {
+      type: String,
+      required: true,
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>
