@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm(username, password)">
       <div>
         <label for="username">Username:</label>
         <input type="text" id="username" v-model="username" required />
@@ -23,9 +23,9 @@ export default {
     };
   },
   methods: {
-    submitForm() {
+    submitForm(username: string, password: string) {
       // Handle form submission here
-      console.log(`Username: ${this.username}, Password: ${this.password}`);
+      console.log(`Username: ${username}, Password: ${password}`);
     },
   },
 };
