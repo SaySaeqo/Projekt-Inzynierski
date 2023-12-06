@@ -15,7 +15,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { Exhibit, Widget } from "@/models/Exhibit";
-import TheNavigation from "./TheNavigation.vue";
 
 export default defineComponent({
   props: {
@@ -23,7 +22,7 @@ export default defineComponent({
       type: Exhibit,
       required: true,
     },
-    data: {
+    widget: {
       type: Widget,
       required: true,
     },
@@ -40,7 +39,7 @@ export default defineComponent({
     // get url from firebase
     this.icon = "img/exampleLink.png";
     // get title from firebase
-    this.title = this.data.data + "text";
+    this.title = this.widget.data + "text";
     // get link from firebase
     this.link = "https://www.google.com";
   },

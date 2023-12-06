@@ -4,7 +4,7 @@
     <router-view />
     <footer>
       Credits: <br />
-      download icons PNG Designed By 588ku from https://pngtree.com/freepng/cartoon-link-icon-download_4489920.html?sol=downref&id=bef
+      download icons PNG Designed By 588ku from https://pngtree.com/freepng/cartoon-link-icon-download_4489920.html?sol=downref&id=bef<br />
     </footer>
   </div>
 </template>

@@ -27,18 +27,12 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import WidgetGallery from "./WidgetGallery.vue";
-import WidgetSection from "./WidgetSection.vue";
-import WidgetLink from "./WidgetLink.vue";
 import {Exhibit, Widget} from "@/models/Exhibit";
 import BaseWidget from "./BaseWidget.vue";
 import { useRoute } from "vue-router";
 
 export default defineComponent({
   components: {
-    WidgetGallery,
-    WidgetSection,
-    WidgetLink,
     BaseWidget
 },
   data() {

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { Exhibit } from "@/models/Exhibit";
+import { Exhibit, Widget } from "@/models/Exhibit";
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -14,8 +14,8 @@ export default defineComponent({
           type: Exhibit,
           required: true,
       },
-      data: {
-          type: String,
+      widget: {
+          type: Widget,
           required: true,
       },
   },
