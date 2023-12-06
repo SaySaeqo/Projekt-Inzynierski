@@ -139,6 +139,7 @@ button {
   padding: 1em;
   width: 30em;
   height: 40em;
+  overflow: auto;
 }
 
 .tools {
