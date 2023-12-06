@@ -107,6 +107,7 @@ main {
 }
 section {
   display: flex;
+  justify-content: center;
 }
 ul {
   flex: 1;
@@ -131,12 +132,13 @@ button {
 }
 .preview {
   display: flex;
-  flex: 1;
   flex-direction: column;
   gap: 1em;
   align-items: stretch;
   border: 1px solid black;
   padding: 1em;
+  width: 30em;
+  height: 40em;
 }
 
 .tools {
