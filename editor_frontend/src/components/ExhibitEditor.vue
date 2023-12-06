@@ -3,7 +3,11 @@
     <section>
       <ul>
         <p>id: {{ exhibit.id }}</p>
-        <p class="name">name: {{ exhibit.name }}</p>
+        <div class="name">
+          <label for="name">Name:</label>
+          <input id="name" type="text" v-model="exhibit.name" class="name" />
+        </div>
+        
         <button>Save</button>
       </ul>
     </section>
@@ -117,8 +121,20 @@ p {
 }
 
 .name {
-  font-weight: bold;
+  display: flex;
   flex: 1;
+  align-items: center;
+  padding: 0 1.5em;
+  gap: 1em;
+
+  label {
+    font-weight: bold;
+  }
+  input {
+    flex: 1;
+    align-self: stretch;
+    font-size: 1.2em;
+  }
 }
 
 button {
