@@ -133,6 +133,7 @@ button {
 .preview {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   gap: 1em;
   align-items: stretch;
   border: 1px solid black;

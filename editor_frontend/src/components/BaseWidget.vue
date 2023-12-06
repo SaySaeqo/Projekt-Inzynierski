@@ -2,7 +2,7 @@
   <div class="container">
     <WidgetGallery v-if="widget.type === 'gallery'" :exhibit="exhibit" :data="widget.data" />
     <WidgetSection v-if="widget.type === 'paragraph'" :exhibit="exhibit" :data="widget.data" />
-    <WidgetLink v-if="widget.type === 'link'" :exhibit="exhibit" :data="widget.data" />
+    <WidgetLink v-if="widget.type === 'link'" :exhibit="exhibit" :data="widget" />
     <div class="control">
         <button @click="$emit('up')">UP</button>
         <button @click="$emit('down')">DOWN</button>
@@ -35,9 +35,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 
-WidgetGallery, WidgetSection, WidgetLink {
-    flex: 1;
-}
+
 .control {
     display: flex;
     flex-direction: column;
@@ -47,6 +45,5 @@ WidgetGallery, WidgetSection, WidgetLink {
 
 .container {
     display: flex;
-    flex: 1;
 }
 </style>
