@@ -5,6 +5,8 @@
     <footer>
       Credits: <br />
       download icons PNG Designed By 588ku from https://pngtree.com/freepng/cartoon-link-icon-download_4489920.html?sol=downref&id=bef<br />
+      <a href="https://www.flaticon.com/free-icons/trash" title="trash icons">Trash icons created by Freepik - Flaticon</a><br />
+      <a href="https://www.flaticon.com/free-icons/register" title="register icons">Register icons created by Irfansusanto20 - Flaticon</a>
     </footer>
   </div>
 </template>

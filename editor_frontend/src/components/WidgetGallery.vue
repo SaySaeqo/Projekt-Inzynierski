@@ -1,37 +1,146 @@
 <template>
-  <div>
-    <p>gallery</p>
+  <div class="container2">
+    <div class="main">
+      <img :src="gallery[0] || ''" class="big" />
+      <div class="gallery">
+        <img src="../assets/plus.png" @click="add" class="plus"/>
+        <div class="item-wrapper" v-for="image in gallery" :key="image" @click="remove(image)">
+          <img class="item" :src="image" />
+          <img class="bin-icon" src="../assets/bin.png" />
+        </div>
+      </div>
+      <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Exhibit, Widget } from "@/models/Exhibit";
 import { defineComponent } from "vue";
+import { Exhibit, Widget } from "@/models/Exhibit";
 
 export default defineComponent({
   props: {
-      exhibit: {
-          type: Exhibit,
-          required: true,
-      },
-      widget: {
-          type: Widget,
-          required: true,
-      },
+    exhibit: {
+      type: Exhibit,
+      required: true,
+    },
+    widget: {
+      type: Widget,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      gallery: [] as string[],
+      hidden: "hidden",
+    };
+  },
+  beforeMount() {
+    // get images from firebase
+    this.gallery.push("img/exampleGallery1.png");
+    this.gallery.push("img/exampleGallery2.png");
+    this.gallery.push("img/exampleGallery3.png");
+    this.gallery.push("img/exampleGallery4.png");
+    this.gallery.push("img/exampleGallery5.png");
+    this.gallery.push("img/exampleGallery6.png");
+    this.gallery.push("img/exampleGallery7.png");
+  },
+  methods: {
+    remove(image: string) {
+      this.gallery.splice(this.gallery.indexOf(image), 1);
+    },
+    add() {
+      (this.$refs.fileInput as HTMLInputElement).click();
+    },
+    handleFileUpload(event: Event) {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      // Now you can do whatever you want with the file...
+      // example
+      if (file) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          this.gallery.push(reader.result as string);
+        };
+      }
+    },
   },
 });
 </script>
 
 <style lang="scss" scoped>
-div {
-  height: 20em;
-  border: 1px solid black;
+.main {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
+  flex-direction: column;
+  height: 20em;
+  padding: 1em;
+  gap: 1em;
 }
-.end {
-  align-self: flex-end;
+
+img {
+  object-fit: contain;
+  max-height: 3em;
+}
+.big{
+  max-height: 15em;
+  min-height: 15em;
+}
+
+
+.gallery {
+  flex: 1;
+  display: flex;
+  overflow: auto;
+  width: 22em;
+}
+
+.item-wrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 3em;
+}
+
+.item {
+  display: block;
+  transition: opacity 0.3s ease;
+  object-fit: cover;
+  object-position: center;
+  width: 3em;
+  height: 100%;
+}
+
+.bin-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  object-fit: contain;
+}
+
+.item-wrapper:hover .item {
+  opacity: 0.3;
+}
+
+.item-wrapper:hover .bin-icon {
+  opacity: 1;
+  cursor: pointer;
+}
+
+img.plus:hover {
+  background-color: greenyellow;
+  cursor: pointer;
+}
+
+
+.container2 {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: stretch;
+  height: fit-content;
 }
 </style>
