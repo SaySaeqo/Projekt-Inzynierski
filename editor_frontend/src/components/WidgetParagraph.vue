@@ -68,7 +68,7 @@ export default defineComponent({
 .main {
   display: flex;
   flex-direction: column;
-  height: 17em;
+  height: 15em;
   padding: 1em;
   gap: 1em;
 }

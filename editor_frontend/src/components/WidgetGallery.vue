@@ -128,11 +128,16 @@ img {
   cursor: pointer;
 }
 
-img.plus:hover {
-  background-color: greenyellow;
-  cursor: pointer;
+img.plus {
+  opacity: 0.6;
+  padding: 0.5em;
+  box-sizing: border-box;
 }
 
+img.plus:hover {
+  opacity: 1;
+  cursor: pointer;
+}
 
 .container2 {
   display: flex;

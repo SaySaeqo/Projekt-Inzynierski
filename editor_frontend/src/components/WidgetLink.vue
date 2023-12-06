@@ -7,7 +7,7 @@
     <div :class="'editor ' + hidden">
       <input type="text" v-model="title" />
       <input type="text" v-model="link" />
-      <input type="file" />
+      <input type="file" @change="handleFileUpload" />
     </div>
   </div>
 </template>
@@ -48,6 +48,18 @@ export default defineComponent({
       if (this.hidden == "hidden") this.hidden = "";
       else this.hidden = "hidden";
     },
+    handleFileUpload(event: Event) {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      // Now you can do whatever you want with the file...
+      // example
+      if (file) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          this.icon = reader.result as string;
+        };
+      }
+    },
   },
 });
 </script>
@@ -58,9 +70,14 @@ export default defineComponent({
 }
 img {
   justify-self: flex-start;
-  object-fit: contain;
   height: 3em;
   padding: 1em;
+  display: block;
+  transition: opacity 0.3s ease;
+  object-fit: cover;
+  object-position: center;
+  width: 3em;
+  height: 100%;
 }
 p {
   display: flex;
