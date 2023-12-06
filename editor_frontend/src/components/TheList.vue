@@ -16,9 +16,8 @@
 <script lang="ts">
 import { defineComponent, onUpdated } from "vue";
 import ListItem from "./ListItem.vue";
-import { query, collection, getDocs, getFirestore } from "firebase/firestore";
-import db from "../initfirestore";
 import { Exhibit } from "@/models/Exhibit";
+import dataService from "../services/DataService";
 
 export default defineComponent({
   components: {
@@ -34,16 +33,7 @@ export default defineComponent({
   },
   methods: {
     async getExhibit() {
-      let db1 = getFirestore(db);
-      const querySnap = await getDocs(query(collection(db1, "exhibits")));
-
-      // add each doc to 'countries' array
-      querySnap.forEach((doc) => {
-        let exhibit = new Exhibit();
-        exhibit.id = doc.id;
-        exhibit.name = doc.data().name;
-        this.items.push(exhibit);
-      });
+      this.items = await dataService.getAll();
     },
     remove(item: Exhibit) {
       this.items.splice(this.items.indexOf(item), 1);
@@ -55,18 +45,6 @@ export default defineComponent({
       this.items.push(exhibit);
     },
   },
-  /*computed: {
-    items() {
-      return [
-        { id: "1", name: "Intel" },
-        { id: 2, name: "AMD" },
-        { id: 3, name: "Nvidia" },
-        { id: 4, name: "Apple" },
-        { id: 5, name: "Microsoft" },
-        { id: 6, name: "Google" }
-      ];
-    },
-  },*/
 });
 </script>
 

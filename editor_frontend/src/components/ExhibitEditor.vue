@@ -51,10 +51,11 @@ import { defineComponent } from "vue";
 import {Exhibit, Widget} from "@/models/Exhibit";
 import BaseWidget from "./BaseWidget.vue";
 import { useRoute } from "vue-router";
+import dataService from "../services/DataService.js";
 
 export default defineComponent({
   components: {
-    BaseWidget
+    BaseWidget,
 },
   data() {
     return {
@@ -63,8 +64,16 @@ export default defineComponent({
       extra_key: "",
       extra_value: "",
       error_msg: "",
-      
     };
+  },
+  created() {
+    this.getExhibit(useRoute().params.id);
+  },
+  beforeMount() {
+    let id = useRoute().params.id;
+    // this.exhibit = fromDb(id);
+    this.exhibit.id = id as string;
+    this.generatedId = this.exhibit.widgets.length;
   },
   methods: {
     addGallery() {
@@ -106,6 +115,12 @@ export default defineComponent({
       let index = this.exhibit.widgets.indexOf(widget);
       this.exhibit.widgets.splice(index, 1);
     },
+    async getExhibit(id) {
+      let docData = await dataService.getOne(id);
+      this.exhibit.id = id;
+      this.exhibit.name = docData.name;
+      this.exhibit.description = docData.description;
+    },
     addExtras() {
       if (this.extra_key.length > 0 && this.extra_value.length > 0) {
         this.exhibit.extra.set(this.extra_key, this.extra_value);
@@ -122,12 +137,6 @@ export default defineComponent({
     saveExtras(key: string, value: string) {
       this.exhibit.extra.set(key, value);
     },
-  },
-  beforeMount() {
-    let id = useRoute().params.id;
-    // this.exhibit = fromDb(id);
-    this.exhibit.id = id as string;
-    this.generatedId = this.exhibit.widgets.length;
   },
 
 });
