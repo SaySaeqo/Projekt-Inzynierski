@@ -18,11 +18,15 @@
         <button @click="addLink">Add Link</button>
       </div>
       <div class="preview">
-        <BaseWidget v-for="widget in exhibit.widgets" :key="widget.data"
-          :exhibit="exhibit" :widget="widget"
+        <BaseWidget
+          v-for="widget in exhibit.widgets"
+          :key="widget.data"
+          :exhibit="exhibit"
+          :widget="widget"
           @up="moveWidgetUp(widget)"
-          @down="moveWidgetDown(widget)" 
-          @remove="removeWidget(widget)" />
+          @down="moveWidgetDown(widget)"
+          @remove="removeWidget(widget)"
+        />
       </div>
       <div class="extra">
         <div class="item" v-for="extra in exhibit.extra" :key="extra[0]">
@@ -31,7 +35,7 @@
           <div>
             <button @click="saveExtras(extra[0], extra[1])">SAVE</button>
 
-            <button @click="removeExtras(extra[0])" >REMOVE</button>
+            <button @click="removeExtras(extra[0])">REMOVE</button>
           </div>
         </div>
         <div class="item">
@@ -40,7 +44,6 @@
           <button class="add" @click="addExtras">ADD</button>
         </div>
         <p>{{ error_msg }}</p>
-
       </div>
     </section>
   </main>
@@ -48,15 +51,15 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import {Exhibit, Widget} from "@/models/Exhibit";
+import { Exhibit, Widget } from "@/models/Exhibit";
 import BaseWidget from "./BaseWidget.vue";
 import { useRoute } from "vue-router";
-import dataService from "../services/DataService.js";
+import dataService from "../services/DataService";
 
 export default defineComponent({
   components: {
     BaseWidget,
-},
+  },
   data() {
     return {
       exhibit: new Exhibit(),
@@ -67,7 +70,7 @@ export default defineComponent({
     };
   },
   created() {
-    this.getExhibit(useRoute().params.id);
+    this.getExhibit(useRoute().params.id as string);
   },
   beforeMount() {
     let id = useRoute().params.id;
@@ -80,21 +83,21 @@ export default defineComponent({
       this.exhibit.widgets.push({
         id: this.generatedId++,
         type: "gallery",
-        data: ""
+        data: "",
       });
     },
     addParagraph() {
       this.exhibit.widgets.push({
         id: this.generatedId++,
         type: "paragraph",
-        data: ""
+        data: "",
       });
     },
     addLink() {
       this.exhibit.widgets.push({
         id: this.generatedId++,
         type: "link",
-        data: ""
+        data: "",
       });
     },
     moveWidgetUp(widget: Widget) {
@@ -115,7 +118,7 @@ export default defineComponent({
       let index = this.exhibit.widgets.indexOf(widget);
       this.exhibit.widgets.splice(index, 1);
     },
-    async getExhibit(id) {
+    async getExhibit(id: string) {
       let docData = await dataService.getOne(id);
       this.exhibit.id = id;
       this.exhibit.name = docData.name;
@@ -138,12 +141,10 @@ export default defineComponent({
       this.exhibit.extra.set(key, value);
     },
   },
-
 });
 </script>
 
 <style lang="scss" scoped>
-
 main {
   display: flex;
   flex-direction: column;
@@ -200,7 +201,8 @@ button {
   overflow: auto;
 }
 
-.tools, .extra {
+.tools,
+.extra {
   display: flex;
   flex-direction: column;
   align-items: stretch;

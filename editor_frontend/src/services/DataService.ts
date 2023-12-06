@@ -1,28 +1,31 @@
-//import coll from "@/initfirestore";
 import { getFirestore } from "firebase/firestore";
 import firebaseApp from "@/initfirestore";
 import { query, collection, getDocs, getDoc, doc } from "firebase/firestore";
+import { Exhibit } from "@/models/Exhibit";
 
-//let db = getFirestore(firebaseApp);
 const db = getFirestore(firebaseApp);
 
 class DataService {
   async getAll() {
-    let sth = [{ id: "1", name: "1" }];
+    const sth = [] as Exhibit[];
     sth.pop();
     const querySnap = await getDocs(query(collection(db, "exhibits")));
 
     // add each doc to 'countries' array
     querySnap.forEach((doc) => {
-      sth.push({ id: doc.id, name: doc.data().name });
+      sth.push(new Exhibit(doc.id, doc.data().name));
     });
 
     return sth;
   }
 
-  async getOne(id) {
+  async getOne(id: string) {
+    const sth = new Exhibit();
     const snap = await getDoc(doc(db, "exhibits", id));
-    return snap.data();
+    sth.id = id;
+    sth.name = snap.data()?.name;
+    sth.description = snap.data()?.description;
+    return sth;
   }
 
   /*create(exhibit) {

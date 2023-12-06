@@ -1,11 +1,6 @@
-//import { initializeApp } from "firebase/app";
-//import firebase from "firebase/app";
-//import { getFirestore } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 
-//import "firebase";
-
-let config = {
+const config = {
   apiKey: "AIzaSyCd4GmSTcBhnrnyxwAxGz63VeZoBHMu4p8",
   authDomain: "cloudlib-980ef.firebaseapp.com",
   databaseURL:
