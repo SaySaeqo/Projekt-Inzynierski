@@ -1,9 +1,9 @@
 <template>
   <div>
-    <form @submit.prevent="submitForm(username, password)">
+    <form @submit.prevent="submitForm(email, password)">
       <div>
         <label for="username">Username:</label>
-        <input type="text" id="username" v-model="username" required />
+        <input v-model="email" type="email" placeholder="Email" />
       </div>
       <div>
         <label for="password">Password:</label>
@@ -15,17 +15,21 @@
 </template>
 
 <script lang="ts">
+import firebaseApp from "@/initfirestore";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 export default {
   data() {
     return {
-      username: "",
+      email: "",
       password: "",
     };
   },
   methods: {
-    submitForm(username: string, password: string) {
-      // Handle form submission here
-      console.log(`Username: ${username}, Password: ${password}`);
+    submitForm(email: string, password: string) {
+      const auth = getAuth(firebaseApp);
+      signInWithEmailAndPassword(auth, email, password).catch((error) => {
+        console.error(error);
+      });
     },
   },
 };
