@@ -7,7 +7,6 @@
           <label for="name">Name:</label>
           <input id="name" type="text" v-model="exhibit.name" class="name" />
         </div>
-        
         <button>Save</button>
       </ul>
     </section>
@@ -24,6 +23,24 @@
           @up="moveWidgetUp(widget)"
           @down="moveWidgetDown(widget)" 
           @remove="removeWidget(widget)" />
+      </div>
+      <div class="extra">
+        <div class="item" v-for="extra in exhibit.extra" :key="extra[0]">
+          <p>{{ extra[0] }}</p>
+          <input type="text" v-model="extra[1]" />
+          <div>
+            <button @click="saveExtras(extra[0], extra[1])">SAVE</button>
+
+            <button @click="removeExtras(extra[0])" >REMOVE</button>
+          </div>
+        </div>
+        <div class="item">
+          <input type="text" v-model="extra_key" />
+          <input type="text" v-model="extra_value" />
+          <button class="add" @click="addExtras">ADD</button>
+        </div>
+        <p>{{ error_msg }}</p>
+
       </div>
     </section>
   </main>
@@ -43,6 +60,10 @@ export default defineComponent({
     return {
       exhibit: new Exhibit(),
       generatedId: 0,
+      extra_key: "",
+      extra_value: "",
+      error_msg: "",
+      
     };
   },
   methods: {
@@ -85,6 +106,22 @@ export default defineComponent({
       let index = this.exhibit.widgets.indexOf(widget);
       this.exhibit.widgets.splice(index, 1);
     },
+    addExtras() {
+      if (this.extra_key.length > 0 && this.extra_value.length > 0) {
+        this.exhibit.extra.set(this.extra_key, this.extra_value);
+        this.extra_key = "";
+        this.extra_value = "";
+        this.error_msg = "";
+      } else {
+        this.error_msg = "Please fill in both fields";
+      }
+    },
+    removeExtras(key: string) {
+      this.exhibit.extra.delete(key);
+    },
+    saveExtras(key: string, value: string) {
+      this.exhibit.extra.set(key, value);
+    },
   },
   beforeMount() {
     let id = useRoute().params.id;
@@ -97,6 +134,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
 main {
   display: flex;
   flex-direction: column;
@@ -153,10 +191,30 @@ button {
   overflow: auto;
 }
 
-.tools {
+.tools, .extra {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   padding: 1em;
+
+  .item {
+    gap: 1em;
+    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+    border: 1px solid black;
+  }
+
+  .add:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+  }
 }
 </style>
