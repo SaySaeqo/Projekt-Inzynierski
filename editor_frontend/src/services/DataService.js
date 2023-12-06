@@ -1,7 +1,7 @@
 //import coll from "@/initfirestore";
 import { getFirestore } from "firebase/firestore";
 import firebaseApp from "@/initfirestore";
-import { query, collection, getDocs } from "firebase/firestore"
+import { query, collection, getDocs, getDoc, doc } from "firebase/firestore";
 
 //let db = getFirestore(firebaseApp);
 const db = getFirestore(firebaseApp);
@@ -9,26 +9,20 @@ const db = getFirestore(firebaseApp);
 class DataService {
   async getAll() {
     let sth = [{ id: "1", name: "1" }];
+    sth.pop();
     const querySnap = await getDocs(query(collection(db, "exhibits")));
-    /*db.collection("exhibits")
-      .get()
-      .then((query) => {
-        query.forEach((doc) => {
-          sth.push({
-            id: doc.data().id,
-            name: doc.data().name,
-          });
-        });
-      });*/
 
+    // add each doc to 'countries' array
     querySnap.forEach((doc) => {
-      sth.push({
-        id: doc.data().id,
-        name: doc.data().name,
-      });
+      sth.push({ id: doc.id, name: doc.data().name });
     });
 
     return sth;
+  }
+
+  async getOne(id) {
+    const snap = await getDoc(doc(db, "exhibits", id));
+    return snap.data();
   }
 
   /*create(exhibit) {

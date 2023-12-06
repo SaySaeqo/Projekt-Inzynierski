@@ -16,6 +16,7 @@ import { defineComponent, onUpdated } from "vue";
 import ListItem from "./ListItem.vue";
 import { query, collection, getDocs, getFirestore } from "firebase/firestore";
 import db from "../initfirestore.js";
+import dataService from "../services/DataService.js";
 
 export default defineComponent({
   components: {
@@ -31,13 +32,7 @@ export default defineComponent({
   },
   methods: {
     async getExhibit() {
-      let db1 = getFirestore(db);
-      const querySnap = await getDocs(query(collection(db1, "exhibits")));
-
-      // add each doc to 'countries' array
-      querySnap.forEach((doc) => {
-        this.items.push({ id: doc.id, name: doc.data().name });
-      });
+      this.items = await dataService.getAll();
     },
   },
   /*computed: {

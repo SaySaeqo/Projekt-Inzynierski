@@ -20,12 +20,13 @@
   </main>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from "vue";
 import { useRoute } from "vue-router";
 import WidgetGallery from "./WidgetGallery.vue";
 import WidgetSection from "./WidgetSection.vue";
 import WidgetLink from "./WidgetLink.vue";
+import dataService from "../services/DataService.js";
 
 export default defineComponent({
   components: {
@@ -33,17 +34,32 @@ export default defineComponent({
     WidgetSection,
     WidgetLink,
   },
-  computed: {
+  data() {
+    return {
+      exhibit: {},
+    };
+  },
+  created() {
+    this.getExhibit(useRoute().params.id);
+  },
+  /*computed: {
     exhibit() {
       return {
         id: useRoute().params.id,
-        name: "Intel",
-        description:
-          "Intel Corporation is an American multinational corporation and technology company headquartered in Santa Clara, California, in Silicon Valley.",
+        name: "name",
+        description: "description",
         image:
           "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Intel_logo_%282006-2020%29.svg/1200px-Intel_logo_%282006-2020%29.svg.png",
         link: "https://en.wikipedia.org/wiki/Intel",
       };
+    },
+  },*/
+  methods: {
+    async getExhibit(id) {
+      let docData = await dataService.getOne(id);
+      this.exhibit.id = id;
+      this.exhibit.name = docData.name;
+      this.exhibit.description = docData.description;
     },
   },
 });
