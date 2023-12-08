@@ -65,6 +65,11 @@ class ExhibitFragment : Fragment() {
             link = Uri.parse("https://google.com")
         }
 
+        // add 15 example keys to the extra map
+        for (i in 1..15) {
+            binding.exampleExtra.setExtra("Key $i", "Value $i")
+        }
+
 
         return binding.root
     }

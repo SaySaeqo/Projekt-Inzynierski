@@ -36,6 +36,12 @@
             android:id="@+id/example_link"
             />
 
+        <pl.edu.pg.cloudlib.exhibit.ExtraWidgetView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/example_extra"
+            />
+
         <TextView
             android:id="@+id/example_text"
             android:layout_width="match_parent"
