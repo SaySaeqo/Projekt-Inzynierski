@@ -7,7 +7,7 @@
           <label for="name">Name:</label>
           <input id="name" type="text" v-model="exhibit.name" class="name" />
         </div>
-        <button>Save</button>
+        <button @click="saveExhibit">Save</button>
       </ul>
     </section>
     <section>
@@ -119,10 +119,7 @@ export default defineComponent({
       this.exhibit.widgets.splice(index, 1);
     },
     async getExhibit(id: string) {
-      let docData = await dataService.getOne(id);
-      this.exhibit.id = id;
-      this.exhibit.name = docData.name;
-      this.exhibit.description = docData.description;
+      this.exhibit = await dataService.getOne(id);
     },
     addExtras() {
       if (this.extra_key.length > 0 && this.extra_value.length > 0) {
@@ -139,6 +136,14 @@ export default defineComponent({
     },
     saveExtras(key: string, value: string) {
       this.exhibit.extra.set(key, value);
+    },
+    saveExhibit() {
+      if (this.exhibit.name) {
+        this.exhibit.description = "";
+        dataService.update(this.exhibit);
+      } else {
+        this.error_msg = "Exhibit has to have a name";
+      }
     },
   },
 });
