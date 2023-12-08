@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:id="@+id/text_view"
         android:justificationMode="inter_word"
+        android:textIsSelectable="true"
         />
 
 </FrameLayout>

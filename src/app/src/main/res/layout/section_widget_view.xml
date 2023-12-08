@@ -19,6 +19,7 @@
                     android:id="@+id/text_view"
                     android:background="@drawable/border"
                     android:padding="20dp"
+                    android:textIsSelectable="true"
                     />
 
                 <Button
