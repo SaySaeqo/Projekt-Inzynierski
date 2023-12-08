@@ -2,11 +2,11 @@ package pl.edu.pg.cloudlib.exhibit
 
 import android.net.Uri
 import android.os.Bundle
-import android.transition.AutoTransition
-import android.transition.TransitionManager
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import pl.edu.pg.cloudlib.R
@@ -16,6 +16,7 @@ import pl.edu.pg.cloudlib.databinding.FragmentExhibitBinding
 class ExhibitFragment : Fragment() {
 
     private lateinit var binding: FragmentExhibitBinding
+    private lateinit var test: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,7 +26,9 @@ class ExhibitFragment : Fragment() {
 
         activity?.title = getString(R.string.exhibit_page_title)
 
-        val test = arguments?.getString(BUNDLE_KEY) ?: "Error: no message arrived"
+        setHasOptionsMenu(true)
+
+        test = arguments?.getString(BUNDLE_KEY) ?: "Error: no message arrived"
         binding.exampleText.text = test
 
         binding.exampleGallery.images = intArrayOf(
@@ -74,7 +77,21 @@ class ExhibitFragment : Fragment() {
         return binding.root
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        val aimItem = menu.findItem(R.id.aim)
+        aimItem.setVisible(true)
+        aimItem.setOnMenuItemClickListener {
+            setFragmentResult(
+                AIM_KEY,
+                bundleOf(AIM_KEY to test)
+            )
+            true
+        }
+    }
+
     companion object{
         const val BUNDLE_KEY = "ExhibitMessage"
+        const val AIM_KEY = "AimMessage"
     }
 }

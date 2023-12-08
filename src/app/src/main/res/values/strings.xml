@@ -36,4 +36,7 @@
     <string name="search_exhibits_name_hint">Search exhibits by name</string>
     <string name="search_page_title">Search exhibit</string>
     <string name="search_exhibits_button">Search</string>
+    <string name="aim">Aim</string>
+    <string name="content_description_aim">Buttom to aim exhibit on exhibition.</string>
+    <string name="aim_page_title">Aim exhibit!</string>
 </resources>

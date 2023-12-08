@@ -11,6 +11,7 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import pl.edu.pg.cloudlib.databinding.ActivityMainBinding
+import pl.edu.pg.cloudlib.exhibit.AimFragment
 import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
 import pl.edu.pg.cloudlib.list.SearchFragment
 import pl.edu.pg.cloudlib.exhibit.SectionFragment
@@ -86,6 +87,15 @@ class MainActivity : AppCompatActivity() {
                 addToBackStack(null)
             }
             binding.navView.setCheckedItem(R.id.nav_list)
+        }
+        supportFragmentManager.setFragmentResultListener(ExhibitFragment.AIM_KEY, this)
+        { _, bundle ->
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace<AimFragment>(binding.fragmentContainer.id, args = bundle)
+                addToBackStack(null)
+            }
+            binding.navView.setCheckedItem(R.id.menu_none)
         }
 
         val action: String? = intent?.action
