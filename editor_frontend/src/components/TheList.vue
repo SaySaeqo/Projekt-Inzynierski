@@ -36,12 +36,13 @@ export default defineComponent({
       this.items = await dataService.getAll();
     },
     remove(item: Exhibit) {
+      dataService.delete(item.id);
       this.items.splice(this.items.indexOf(item), 1);
     },
-    add() {
+    async add() {
+      const id = await dataService.createEmpty();
       let exhibit = new Exhibit();
-      exhibit.id = "0";
-      exhibit.name = "New Exhibit";
+      exhibit.id = id;
       this.items.push(exhibit);
     },
   },
