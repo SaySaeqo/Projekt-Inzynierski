@@ -35,6 +35,8 @@ class ListFragment : Fragment() {
         binding = FragmentListBinding.inflate(inflater, container, false)
 
         activity?.title = getString(R.string.list_page_title)
+        val searchText = arguments?.getString(SearchFragment.BUNDLE_KEY) ?: ""
+
 
         // for exhibit in db
         val row = ListRowView(requireContext())
@@ -61,7 +63,9 @@ class ListFragment : Fragment() {
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    addRow(document.data["name"].toString(), document.data["description"].toString(), "dbExampleMessage")
+                    if (document.data["name"].toString().contains(searchText)){
+                        addRow(document.data["name"].toString(), document.data["description"].toString(), "dbExampleMessage")
+                    }
                 }
             }
             .addOnFailureListener { exception ->

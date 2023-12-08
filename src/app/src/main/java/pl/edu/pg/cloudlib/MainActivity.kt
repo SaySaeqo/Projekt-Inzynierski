@@ -3,6 +3,7 @@ package pl.edu.pg.cloudlib
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
@@ -11,9 +12,11 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import pl.edu.pg.cloudlib.databinding.ActivityMainBinding
 import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
+import pl.edu.pg.cloudlib.list.SearchFragment
 import pl.edu.pg.cloudlib.exhibit.SectionFragment
 import pl.edu.pg.cloudlib.list.ListFragment
 import pl.edu.pg.cloudlib.scanner.QRScannerFragment
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -75,6 +78,15 @@ class MainActivity : AppCompatActivity() {
             }
             binding.navView.setCheckedItem(R.id.menu_none)
         }
+        supportFragmentManager.setFragmentResultListener(SearchFragment.BUNDLE_KEY, this)
+        { _, bundle ->
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace<ListFragment>(binding.fragmentContainer.id, args = bundle)
+                addToBackStack(null)
+            }
+            binding.navView.setCheckedItem(R.id.nav_list)
+        }
 
         val action: String? = intent?.action
         val data: Uri? = intent?.data
@@ -91,6 +103,22 @@ class MainActivity : AppCompatActivity() {
                 binding.navView.setCheckedItem(R.id.menu_none)
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.top_app_bar, menu)
+
+        menu?.findItem(R.id.search)?.setOnMenuItemClickListener{
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace<SearchFragment>(binding.fragmentContainer.id)
+                addToBackStack(null)
+            }
+            binding.navView.setCheckedItem(R.id.menu_none)
+            true
+        }
+        return true
     }
 
     companion object {

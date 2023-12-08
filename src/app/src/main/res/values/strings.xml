@@ -33,4 +33,7 @@
     <string name="extra_information">Extra Information</string>
     <string name="show">Show</string>
     <string name="hide">Hide</string>
+    <string name="search_exhibits_name_hint">Search exhibits by name</string>
+    <string name="search_page_title">Search exhibit</string>
+    <string name="search_exhibits_button">Search</string>
 </resources>
