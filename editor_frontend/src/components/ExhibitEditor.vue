@@ -37,7 +37,7 @@
           @remove="removeWidget(widget)"
         />
       </div>
-      <EditorExtra :extra="exhibit.extra" />
+      <EditorExtra :exhibit="exhibit" />
     </section>
   </main>
 </template>

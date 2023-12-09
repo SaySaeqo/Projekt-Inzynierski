@@ -1,23 +1,23 @@
 <template>
     <div class="extra">
-        <div class="item" v-for="x in extra" :key="x[0]">
-        <p>{{ x[0] }}</p>
-        <input type="text" v-model="x[1]" />
-        <select v-model="selectedExhibit">
-          <option v-for="exhibit in exhibits" :key="exhibit.id" :value="exhibit">
+        <div class="item" v-for="x in exhibit.extra" :key="x.key">
+        <p>{{ x.key }}</p>
+        <input type="text" v-model="x.value" />
+        <select v-model="x.linkId">
+          <option v-for="exhibit in exhibits" :key="exhibit.id" :value="exhibit.id">
             {{ exhibit.name }}
           </option>
         </select>
         <div>
-            <button @click="saveExtras(x[0], x[1])">SAVE</button>
-            <button @click="removeExtras(x[0])">REMOVE</button>
+            <button @click="saveExtras(x)">SAVE</button>
+            <button @click="removeExtras(x)">REMOVE</button>
         </div>
         </div>
         <div class="item">
             <input type="text" v-model="extra_key" />
             <input type="text" v-model="extra_value" />
             <select v-model="selectedExhibit">
-              <option v-for="exhibit in exhibits" :key="exhibit.id" :value="exhibit">
+              <option v-for="exhibit in exhibits" :key="exhibit.id" :value="exhibit.id">
                 {{ exhibit.name }}
               </option>
             </select>
@@ -31,12 +31,12 @@
   import { defineComponent, PropType } from "vue";
   import BaseWidget from "./BaseWidget.vue";
   import dataService from "../services/DataService";
-import { Exhibit } from "@/models/Exhibit";
+import { Exhibit, ExhibitPair } from "@/models/Exhibit";
   
   export default defineComponent({
     props: {
-      extra: {
-        type: Object as PropType<Map<string, string>>,
+      exhibit: {
+        type: Exhibit,
         required: true,
       },
     },
@@ -49,7 +49,7 @@ import { Exhibit } from "@/models/Exhibit";
         extra_value: "",
         error_msg: "",
         exhibits: [] as Exhibit[],
-        selectedExhibit: "",
+        selectedExhibit: 0,
       };
     },
     created() {
@@ -61,20 +61,30 @@ import { Exhibit } from "@/models/Exhibit";
       },
       addExtras() {
         if (this.extra_key.length > 0 && this.extra_value.length > 0) {
-          this.extra.set(this.extra_key, this.extra_value);
-          this.extra_key = "";
-          this.extra_value = "";
-          this.selectedExhibit = "";
-          this.error_msg = "";
+          if (!this.exhibit.extra.some(item => item.key === this.extra_key)) {
+            this.exhibit.extra.push(new ExhibitPair(this.extra_key, this.extra_value, this.selectedExhibit ));
+            this.extra_key = "";
+            this.extra_value = "";
+            this.selectedExhibit = 0;
+            this.error_msg = "";
+          } else {
+            this.error_msg = "An item with this key already exists";
+          }
         } else {
           this.error_msg = "Please fill in both fields";
         }
       },
-      removeExtras(key: string) {
-        this.extra.delete(key);
+      removeExtras(extra: ExhibitPair) {
+        const index = this.exhibit.extra.findIndex(item => item.key === extra.key);
+        if (index !== -1) {
+          this.exhibit.extra.splice(index, 1);
+        }
       },
-      saveExtras(key: string, value: string) {
-        this.extra.set(key, value);
+      saveExtras(extra: ExhibitPair) {
+        const index = this.exhibit.extra.findIndex(item => item.key === extra.key);
+        if (index !== -1) {
+          this.exhibit.extra.splice(index, 1, extra);
+        }
       },
     },
   });

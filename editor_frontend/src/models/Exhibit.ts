@@ -6,7 +6,7 @@ export class Exhibit {
   id: string; // id of exhibit
   name: string; // name of exhibit
   description: string; //short description
-  extra: Map<string, string>; //extra parameters
+  extra: ExhibitPair[]; //extra parameters
   widgets: Widget[];
   icon: string; // path to image with icon
   location: string; // path to image with location on exhibition
@@ -17,22 +17,22 @@ export class Exhibit {
     this.id = id || "";
     this.name = name || "";
     this.description = "";
-    this.extra = new Map<string, string>();
+    this.extra = [];
     this.widgets = [];
     this.icon = "";
     this.location = "";
   }
 
   toFirestoreConverter() {
-    const pairArr: ExhibitPair[] = [];
-    Array.from(this.extra.entries()).forEach((el) => {
-      pairArr.push(new ExhibitPair(el[0], el[1]));
-    });
+    // const pairArr: ExhibitPair[] = [];
+    // Array.from(this.extra.entries()).forEach((el) => {
+    //   pairArr.push(new ExhibitPair(el[0], el[1]));
+    // });
 
     return {
       name: this.name,
       description: this.description,
-      extra: JSON.stringify(pairArr),
+      extra: JSON.stringify(this.extra),
       widgets: JSON.stringify(this.widgets),
     };
   }
@@ -43,11 +43,12 @@ export class Exhibit {
     newExhibit.name = data?.name;
     newExhibit.description = data?.description;
     newExhibit.widgets = JSON.parse(data?.widgets);
+    newExhibit.extra = JSON.parse(data?.extra);
 
-    const pairArr: ExhibitPair[] = JSON.parse(data?.extra);
-    pairArr.forEach((el) => {
-      newExhibit.extra.set(el.value, el.key);
-    });
+    // const pairArr: ExhibitPair[] = JSON.parse(data?.extra);
+    // pairArr.forEach((el) => {
+    //   newExhibit.extra.set(el.value, el.key);
+    // });
 
     return newExhibit;
   }
@@ -65,12 +66,16 @@ export class Widget {
   }
 }
 
-class ExhibitPair {
+export class ExhibitPair {
   value: string;
   key: string;
+  linkId: number;
 
-  constructor(value: string, key: string) {
+  constructor(value: string, key: string);
+  constructor(value: string, key: string, linkId: number);
+  constructor(value: string, key: string, linkId?: number) {
     this.value = value;
     this.key = key;
+    this.linkId = linkId || 0;
   }
 }

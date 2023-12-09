@@ -43,7 +43,7 @@ export default defineComponent({
       );
     },
   },
-  created() {
+  beforeMount() {
     this.getExhibit();
   },
   methods: {
