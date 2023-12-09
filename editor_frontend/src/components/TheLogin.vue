@@ -16,8 +16,10 @@
 
 <script lang="ts">
 import firebaseApp from "@/initfirestore";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-export default {
+import { applyActionCode, getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { defineComponent } from "vue";
+import { useStore } from "vuex";
+export default defineComponent({
   data() {
     return {
       email: "",
@@ -27,12 +29,24 @@ export default {
   methods: {
     submitForm(email: string, password: string) {
       const auth = getAuth(firebaseApp);
-      signInWithEmailAndPassword(auth, email, password).catch((error) => {
+      signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        this.store.commit("setUsername", user.displayName || user.email);
+        this.$router.push("/");
+      })
+      .catch((error) => {
         console.error(error);
+        this.store.commit("wrongLoggin");
       });
     },
   },
-};
+
+  setup() {
+    const store = useStore();
+    return { store };
+  },
+});
 </script>
 
 <style lang="scss" scoped>
