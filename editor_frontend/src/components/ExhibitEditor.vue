@@ -20,7 +20,7 @@
       <div class="preview">
         <BaseWidget
           v-for="widget in exhibit.widgets"
-          :key="widget.data"
+          :key="widget.id"
           :exhibit="exhibit"
           :widget="widget"
           @up="moveWidgetUp(widget)"
@@ -55,6 +55,7 @@ import { Exhibit, Widget } from "@/models/Exhibit";
 import BaseWidget from "./BaseWidget.vue";
 import { useRoute } from "vue-router";
 import dataService from "../services/DataService";
+//import { v4 as uuidv4 } from "uuid";
 
 export default defineComponent({
   components: {
@@ -80,25 +81,13 @@ export default defineComponent({
   },
   methods: {
     addGallery() {
-      this.exhibit.widgets.push({
-        id: this.generatedId++,
-        type: "gallery",
-        data: "",
-      });
+      this.exhibit.widgets.push(new Widget(this.generatedId++, "gallery"));
     },
     addParagraph() {
-      this.exhibit.widgets.push({
-        id: this.generatedId++,
-        type: "paragraph",
-        data: "",
-      });
+      this.exhibit.widgets.push(new Widget(this.generatedId++, "paragraph"));
     },
     addLink() {
-      this.exhibit.widgets.push({
-        id: this.generatedId++,
-        type: "link",
-        data: "",
-      });
+      this.exhibit.widgets.push(new Widget(this.generatedId++, "link"));
     },
     moveWidgetUp(widget: Widget) {
       let index = this.exhibit.widgets.indexOf(widget);

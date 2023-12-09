@@ -3,7 +3,7 @@
     <div class="main">
       <img :src="gallery[0] || ''" class="big" />
       <div class="gallery">
-        <img src="../assets/plus.png" @click="add" class="plus"/>
+        <img src="../assets/plus.png" @click="add" class="plus" />
         <div class="item-wrapper" v-for="image in gallery" :key="image" @click="remove(image)">
           <img class="item" :src="image" />
           <img class="bin-icon" src="../assets/bin.png" />
@@ -17,6 +17,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { Exhibit, Widget } from "@/models/Exhibit";
+import dataService from "../services/DataService";
 
 export default defineComponent({
   props: {
@@ -38,12 +39,12 @@ export default defineComponent({
   beforeMount() {
     // get images from firebase
     this.gallery.push("img/exampleGallery1.png");
-    this.gallery.push("img/exampleGallery2.png");
-    this.gallery.push("img/exampleGallery3.png");
-    this.gallery.push("img/exampleGallery4.png");
-    this.gallery.push("img/exampleGallery5.png");
-    this.gallery.push("img/exampleGallery6.png");
-    this.gallery.push("img/exampleGallery7.png");
+    console.log(this.widget.imagesURLs);
+    this.widget.imagesURLs.forEach(async (el) => {
+      this.gallery.push(await dataService.getImage(el));
+    });
+    //const sthPath = await dataService.getImage(this.exhibit.id + "_.jpg");
+    //this.gallery.push(sthPath);
   },
   methods: {
     remove(image: string) {
@@ -59,8 +60,13 @@ export default defineComponent({
       if (file) {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => {
+        reader.onload = async () => {
           this.gallery.push(reader.result as string);
+          console.log(this.widget.imagesURLs);
+          const name = await dataService.addImage(this.exhibit.id, file);
+          //this.widget.imagesURLs.push(name);
+          this.widget.addImageURL(name);
+          console.log(this.widget.imagesURLs);
         };
       }
     },
@@ -81,11 +87,10 @@ img {
   object-fit: contain;
   max-height: 3em;
 }
-.big{
+.big {
   max-height: 15em;
   min-height: 15em;
 }
-
 
 .gallery {
   flex: 1;

@@ -11,9 +11,13 @@ import {
   updateDoc
 } from "firebase/firestore";
 import firebaseApp from "@/initfirestore";
+import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { Exhibit } from "@/models/Exhibit";
+//import { randomUUID } from "crypto";
 
 const db = getFirestore(firebaseApp);
+const storage = getStorage(firebaseApp);
+const imagesRef = ref(storage, "images");
 
 class DataService {
   private static exists: boolean;
@@ -70,6 +74,30 @@ class DataService {
 
   async delete(id: string) {
     await deleteDoc(doc(db, "exhibits", id));
+  }
+
+  async addImage(exhibitId: string, imageFile: File) {
+    //const uuid = crypto.randomUUID();
+    const extension = imageFile.name.split(".").pop();
+    const name = exhibitId + "_" + "." + extension;
+    const fileRef = ref(imagesRef, name);
+    uploadBytes(fileRef, imageFile).then(() => {
+      console.log("Uploaded a blob or file!");
+    });
+
+    return fileRef.name;
+  }
+
+  async removeImage(name: string) {
+    // Create a reference to the file to delete
+    const imageRef = ref(imagesRef, name);
+    // Delete the file
+    await deleteObject(imageRef);
+  }
+
+  async getImage(name: string) {
+    const imageRef = ref(imagesRef, name);
+    return await getDownloadURL(imageRef);
   }
 }
 

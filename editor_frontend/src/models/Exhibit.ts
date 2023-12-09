@@ -52,12 +52,20 @@ export class Exhibit {
 export class Widget {
   id: number;
   type: string;
+  title: string;
   data: string;
+  imagesURLs: string[];
 
-  constructor() {
+  constructor(id: number, type: string) {
     this.id = 0;
     this.type = "";
+    this.title = "";
     this.data = "";
+    this.imagesURLs = [];
+  }
+
+  addImageURL(name: string){
+    this.imagesURLs.push(name);
   }
 }
 
