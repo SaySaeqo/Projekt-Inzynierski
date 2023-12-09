@@ -42,8 +42,8 @@ export class Exhibit {
     newExhibit.id = id;
     newExhibit.name = data?.name;
     newExhibit.description = data?.description;
-    newExhibit.widgets = JSON.parse(data?.widgets);
-    newExhibit.extra = JSON.parse(data?.extra);
+    newExhibit.widgets = JSON.parse(data?.widgets) as Widget[];
+    newExhibit.extra = JSON.parse(data?.extra) as ExhibitPair[];
 
     // const pairArr: ExhibitPair[] = JSON.parse(data?.extra);
     // pairArr.forEach((el) => {
@@ -62,8 +62,8 @@ export class Widget {
   imagesURLs: string[];
 
   constructor(id: number, type: string) {
-    this.id = 0;
-    this.type = "";
+    this.id = id;
+    this.type = type;
     this.title = "";
     this.data = "";
     this.imagesURLs = [];
