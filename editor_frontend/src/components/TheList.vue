@@ -85,5 +85,6 @@ li {
 }
 label[for="search"] {
   padding: 0 1.5em;
+  cursor: pointer;
 }
 </style>
