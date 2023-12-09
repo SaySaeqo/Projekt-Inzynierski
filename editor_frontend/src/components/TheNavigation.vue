@@ -5,7 +5,11 @@
         <router-link to="/">List</router-link>
       </li>
       <li>
-        <router-link to="/login">Login</router-link>
+        <div  v-if="isLoggedIn()" class="logout">
+          <a @click="logout">Logout</a>
+          <p>Logged in as {{ store.state.username }}</p>
+        </div>
+        <router-link v-else to="/login">Login</router-link>
       </li>
     </ul>
   </nav>
@@ -13,8 +17,30 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useStore } from "vuex";
+import { getAuth, signOut } from "firebase/auth";
 
-export default defineComponent({});
+export default defineComponent({
+  methods: {
+    async logout() {
+      const auth = getAuth();
+      try {
+        await signOut(auth);
+        this.store.commit("setUsername", "");
+        this.$router.push("/login");
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    isLoggedIn() {
+      return this.store.state.username !== "";
+    },
+  },
+  setup() {
+    const store = useStore();
+    return { store };
+  },
+});
 </script>
 
 <style lang="scss" scoped>
@@ -37,5 +63,13 @@ a {
 }
 a:hover {
   background-color: colors.$hover;
+  cursor: pointer;
+}
+
+.logout {
+  display: flex;
+  align-items: stretch;
+  gap: 1em;
 }
 </style>
+

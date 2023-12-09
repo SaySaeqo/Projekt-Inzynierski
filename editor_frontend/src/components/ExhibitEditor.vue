@@ -12,10 +12,19 @@
     </section>
     <section>
       <div class="tools">
-        <h1>Tools:</h1>
         <button @click="addGallery">Add Gallery</button>
         <button @click="addParagraph">Add Paragraph</button>
         <button @click="addLink">Add Link</button>
+        <div class="insert-img">
+          <label for="icon">Insert icon:</label>
+          <input id="icon" type="file" ref="iconInput" @change="onIconChange" />
+          <img :src="iconSrc" alt="" @click="triggerClick('iconInput')" />
+        </div>
+        <div class="insert-img">
+          <label for="location">Insert location:</label>
+          <input id="location" type="file" ref="locationInput" @change="onLocationChange" />
+          <img :src="locationSrc" alt="" @click="triggerClick('locationInput')" />
+        </div>
       </div>
       <div class="preview">
         <BaseWidget
@@ -28,23 +37,7 @@
           @remove="removeWidget(widget)"
         />
       </div>
-      <div class="extra">
-        <div class="item" v-for="extra in exhibit.extra" :key="extra[0]">
-          <p>{{ extra[0] }}</p>
-          <input type="text" v-model="extra[1]" />
-          <div>
-            <button @click="saveExtras(extra[0], extra[1])">SAVE</button>
-
-            <button @click="removeExtras(extra[0])">REMOVE</button>
-          </div>
-        </div>
-        <div class="item">
-          <input type="text" v-model="extra_key" />
-          <input type="text" v-model="extra_value" />
-          <button class="add" @click="addExtras">ADD</button>
-        </div>
-        <p>{{ error_msg }}</p>
-      </div>
+      <EditorExtra :exhibit="exhibit" />
     </section>
   </main>
 </template>
@@ -56,10 +49,12 @@ import BaseWidget from "./BaseWidget.vue";
 import { useRoute } from "vue-router";
 import dataService from "../services/DataService";
 //import { v4 as uuidv4 } from "uuid";
+import EditorExtra from "./EditorExtra.vue";
 
 export default defineComponent({
   components: {
     BaseWidget,
+    EditorExtra,
   },
   data() {
     return {
@@ -68,6 +63,8 @@ export default defineComponent({
       extra_key: "",
       extra_value: "",
       error_msg: "",
+      iconSrc: "",
+      locationSrc: "",
     };
   },
   created() {
@@ -110,22 +107,6 @@ export default defineComponent({
     async getExhibit(id: string) {
       this.exhibit = await dataService.getOne(id);
     },
-    addExtras() {
-      if (this.extra_key.length > 0 && this.extra_value.length > 0) {
-        this.exhibit.extra.set(this.extra_key, this.extra_value);
-        this.extra_key = "";
-        this.extra_value = "";
-        this.error_msg = "";
-      } else {
-        this.error_msg = "Please fill in both fields";
-      }
-    },
-    removeExtras(key: string) {
-      this.exhibit.extra.delete(key);
-    },
-    saveExtras(key: string, value: string) {
-      this.exhibit.extra.set(key, value);
-    },
     saveExhibit() {
       if (this.exhibit.name) {
         this.exhibit.description = "";
@@ -133,6 +114,31 @@ export default defineComponent({
       } else {
         this.error_msg = "Exhibit has to have a name";
       }
+    },
+    onIconChange(e: Event) {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.iconSrc = e.target?.result as string;
+        // here save the image to the database
+        // ...
+      };
+      reader.readAsDataURL(file);
+    },
+    onLocationChange(e: Event) {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.locationSrc = e.target?.result as string;
+        // here save the image to the database
+        // ...
+      };
+      reader.readAsDataURL(file);
+    },
+    triggerClick(refName: string) {
+      (this.$refs[refName] as HTMLElement).click();
     },
   },
 });
@@ -195,31 +201,40 @@ button {
   overflow: auto;
 }
 
-.tools,
-.extra {
+.tools {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   padding: 1em;
 
-  .item {
-    gap: 1em;
-    align-items: center;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.insert-img {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1em;
+  padding: 1em;
+  border: 1px solid black;
+
+  img {
+    width: 20em;
+    min-height: 10em ;
+    object-fit: contain;
+    background-image: url('../assets/plus.png');
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.7;
+  }
+  input {
+    display: none;
   }
 
-  .add {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1em;
-    border: 1px solid black;
-  }
-
-  .add:hover {
-    background-color: #f0f0f0;
+  img:hover {
     cursor: pointer;
+    opacity: 1;
   }
 }
+
 </style>

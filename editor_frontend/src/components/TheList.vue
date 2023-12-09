@@ -1,8 +1,12 @@
 <template>
   <main>
     <ul>
+      <li>
+        <label for="search">Search:</label>
+        <input id="search" v-model="search" type="text" placeholder="Search exhibitions..." />
+      </li>
       <ListItem
-        v-for="item in items"
+        v-for="item in filteredItems"
         :key="item.id"
         :id="item.id"
         :name="item.name"
@@ -26,9 +30,20 @@ export default defineComponent({
   data() {
     return {
       items: [] as Exhibit[],
+      search: "",
     };
   },
-  created() {
+  computed: {
+    filteredItems(): Exhibit[] {
+      if (!this.search) {
+        return this.items;
+      }
+      return this.items.filter(item =>
+        item.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+  },
+  beforeMount() {
     this.getExhibit();
   },
   methods: {
@@ -56,5 +71,20 @@ ul {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#search {
+  padding: 1em;
+  font-size: 1em;
+  flex: 1;
+}
+label[for="search"] {
+  padding: 0 1.5em;
+  cursor: pointer;
 }
 </style>

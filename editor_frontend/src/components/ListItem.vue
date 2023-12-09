@@ -1,5 +1,5 @@
 <template>
-  <li class="item">
+  <li>
     <router-link :to="'/exhibit/' + id">
       <div>
         <p>{{ id }}</p>
@@ -26,35 +26,36 @@ export default defineComponent({
 <style lang="scss" scoped>
 @use "../styles/colors";
 
-li {
+a {
   display: flex;
-
-  a {
-    display: flex;
-    flex: 1;
-    text-decoration: none;
-    color: black;
-  }
-
-  a:hover {
-    background-color: colors.$hover;
-  }
-
-  div {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex: 2;
-    border: 1px solid black;
-  }
-
-  div:first-child {
-    flex: 1;
-  }
-
-  p {
-    margin: 1em;
-    padding: 0;
-  }
+  flex: 1;
+  text-decoration: none;
+  color: black;
 }
+
+a:hover {
+  background-color: colors.$hover;
+}
+
+div {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 2;
+  border: 1px solid black;
+}
+
+div:first-child {
+  flex: 1;
+}
+
+p {
+  margin: 1em;
+  padding: 0;
+}
+
+button {
+  align-self: stretch;
+}
+
 </style>

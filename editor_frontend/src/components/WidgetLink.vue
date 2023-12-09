@@ -7,7 +7,7 @@
     <div :class="'editor ' + hidden">
       <input type="text" v-model="title" />
       <input type="text" v-model="link" />
-      <input type="file" @change="handleFileUpload" />
+      <!-- <input type="file" @change="handleFileUpload" /> -->
     </div>
   </div>
 </template>
