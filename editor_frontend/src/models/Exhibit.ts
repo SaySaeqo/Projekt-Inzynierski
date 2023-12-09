@@ -8,6 +8,8 @@ export class Exhibit {
   description: string; //short description
   extra: Map<string, string>; //extra parameters
   widgets: Widget[];
+  icon: string; // path to image with icon
+  location: string; // path to image with location on exhibition
 
   constructor();
   constructor(id: string, name: string);
@@ -17,6 +19,8 @@ export class Exhibit {
     this.description = "";
     this.extra = new Map<string, string>();
     this.widgets = [];
+    this.icon = "";
+    this.location = "";
   }
 
   toFirestoreConverter() {
