@@ -5,7 +5,7 @@
         <router-link to="/">List</router-link>
       </li>
       <li>
-        <div  v-if="isLoggedIn()" class="logout">
+        <div v-if="isLoggedIn()" class="logout">
           <a @click="logout">Logout</a>
           <p>Logged in as {{ store.state.username }}</p>
         </div>

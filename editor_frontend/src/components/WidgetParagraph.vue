@@ -3,14 +3,14 @@
     <div @click="edit" class="main">
       <div class="header">
         <img src="../assets/exampleParagraph.png" />
-        <p>{{ title}}</p>
+        <p>{{ widget.title }}</p>
       </div>
-      <p class="text">{{ text }}</p>
+      <p class="text">{{ widget.data }}</p>
       
     </div>
     <div :class="'editor ' + hidden">
-      <input type="text" v-model="title" />
-      <textarea type="text" v-model="text" />
+      <input type="text" v-model="widget.title" />
+      <textarea type="text" v-model="widget.data" />
     </div>
   </div>
 </template>
@@ -39,10 +39,7 @@ export default defineComponent({
     };
   },
   beforeMount() {
-    // get url from firebase
-    this.icon = "img/exampleLink.png";
-    // get title from firebase
-    this.title = this.widget.data + "paragraph";
+    this.title = this.widget.data;
     // get link from firebase
     this.text = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
     Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,

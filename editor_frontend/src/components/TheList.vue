@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUpdated } from "vue";
+import { defineComponent } from "vue";
 import ListItem from "./ListItem.vue";
 import { Exhibit } from "@/models/Exhibit";
 import dataService from "../services/DataService";
@@ -38,7 +38,7 @@ export default defineComponent({
       if (!this.search) {
         return this.items;
       }
-      return this.items.filter(item =>
+      return this.items.filter((item) =>
         item.name.toLowerCase().includes(this.search.toLowerCase())
       );
     },

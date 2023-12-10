@@ -38,17 +38,18 @@ export default defineComponent({
   },
   beforeMount() {
     // get images from firebase
-    this.gallery.push("img/exampleGallery1.png");
     console.log(this.widget.imagesURLs);
     this.widget.imagesURLs.forEach(async (el) => {
       this.gallery.push(await dataService.getImage(el));
     });
-    //const sthPath = await dataService.getImage(this.exhibit.id + "_.jpg");
-    //this.gallery.push(sthPath);
   },
   methods: {
-    remove(image: string) {
-      this.gallery.splice(this.gallery.indexOf(image), 1);
+    async remove(image: string) {
+      if (await dataService.removeImage(image)) {
+        this.widget.removeImageURL(dataService.getNameFromLink(image) || "");
+        this.gallery.splice(this.gallery.indexOf(image), 1);
+        await dataService.update(this.exhibit);
+      }
     },
     add() {
       (this.$refs.fileInput as HTMLInputElement).click();
@@ -61,12 +62,11 @@ export default defineComponent({
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = async () => {
-          this.gallery.push(reader.result as string);
-          console.log(this.widget.imagesURLs);
           const name = await dataService.addImage(this.exhibit.id, file);
-          //this.widget.imagesURLs.push(name);
           this.widget.addImageURL(name);
-          console.log(this.widget.imagesURLs);
+          await dataService.update(this.exhibit);
+          const imageLink = await dataService.getImage(name);
+          this.gallery.push(imageLink);
         };
       }
     },

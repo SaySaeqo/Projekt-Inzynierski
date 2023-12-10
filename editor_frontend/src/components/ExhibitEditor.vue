@@ -48,7 +48,6 @@ import { Exhibit, Widget } from "@/models/Exhibit";
 import BaseWidget from "./BaseWidget.vue";
 import { useRoute } from "vue-router";
 import dataService from "../services/DataService";
-//import { v4 as uuidv4 } from "uuid";
 import EditorExtra from "./EditorExtra.vue";
 
 export default defineComponent({
@@ -67,8 +66,16 @@ export default defineComponent({
       locationSrc: "",
     };
   },
-  created() {
-    this.getExhibit(useRoute().params.id as string);
+  async created() {
+    await this.getExhibit(useRoute().params.id as string);
+    this.iconSrc = await dataService.getImage(this.exhibit.icon).catch(() => {
+      return "";
+    });
+    this.locationSrc = await dataService
+      .getImage(this.exhibit.location)
+      .catch(() => {
+        return "";
+      });
   },
   beforeMount() {
     let id = useRoute().params.id;
@@ -103,6 +110,7 @@ export default defineComponent({
     removeWidget(widget: Widget) {
       let index = this.exhibit.widgets.indexOf(widget);
       this.exhibit.widgets.splice(index, 1);
+      dataService.removeAllImages(widget);
     },
     async getExhibit(id: string) {
       this.exhibit = await dataService.getOne(id);
@@ -119,10 +127,15 @@ export default defineComponent({
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = (e) => {
-        this.iconSrc = e.target?.result as string;
-        // here save the image to the database
-        // ...
+      reader.onload = async () => {
+        const name = await dataService.updateImage(
+          this.exhibit.id,
+          file,
+          this.iconSrc
+        );
+        this.exhibit.icon = name;
+        await dataService.update(this.exhibit);
+        this.iconSrc = await dataService.getImage(name);
       };
       reader.readAsDataURL(file);
     },
@@ -130,10 +143,15 @@ export default defineComponent({
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = (e) => {
-        this.locationSrc = e.target?.result as string;
-        // here save the image to the database
-        // ...
+      reader.onload = async () => {
+        const name = await dataService.updateImage(
+          this.exhibit.id,
+          file,
+          this.locationSrc
+        );
+        this.exhibit.location = name;
+        await dataService.update(this.exhibit);
+        this.locationSrc = await dataService.getImage(name);
       };
       reader.readAsDataURL(file);
     },
@@ -206,7 +224,6 @@ button {
   flex-direction: column;
   align-items: stretch;
   padding: 1em;
-
 }
 
 .insert-img {
@@ -219,9 +236,9 @@ button {
 
   img {
     width: 20em;
-    min-height: 10em ;
+    min-height: 10em;
     object-fit: contain;
-    background-image: url('../assets/plus.png');
+    background-image: url("../assets/plus.png");
     background-size: auto;
     background-repeat: no-repeat;
     background-position: center;
@@ -236,5 +253,4 @@ button {
     opacity: 1;
   }
 }
-
 </style>

@@ -2,11 +2,11 @@
   <div class="container2">
     <div @click="edit" class="main">
       <img :src="icon" />
-      <p>{{ title}}</p>
+      <p>{{ widget.title}}</p>
     </div>
     <div :class="'editor ' + hidden">
-      <input type="text" v-model="title" />
-      <input type="text" v-model="link" />
+      <input type="text" v-model="widget.title" />
+      <input type="text" v-model="widget.data" />
       <!-- <input type="file" @change="handleFileUpload" /> -->
     </div>
   </div>

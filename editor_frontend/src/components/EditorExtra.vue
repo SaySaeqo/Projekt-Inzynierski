@@ -49,7 +49,7 @@ import { Exhibit, ExhibitPair } from "@/models/Exhibit";
         extra_value: "",
         error_msg: "",
         exhibits: [] as Exhibit[],
-        selectedExhibit: 0,
+        selectedExhibit: "",
       };
     },
     created() {
@@ -62,10 +62,10 @@ import { Exhibit, ExhibitPair } from "@/models/Exhibit";
       addExtras() {
         if (this.extra_key.length > 0 && this.extra_value.length > 0) {
           if (!this.exhibit.extra.some(item => item.key === this.extra_key)) {
-            this.exhibit.extra.push(new ExhibitPair(this.extra_key, this.extra_value, this.selectedExhibit ));
+            this.exhibit.extra.push(new ExhibitPair(this.extra_value, this.extra_key, this.selectedExhibit ));
             this.extra_key = "";
             this.extra_value = "";
-            this.selectedExhibit = 0;
+            this.selectedExhibit = "";
             this.error_msg = "";
           } else {
             this.error_msg = "An item with this key already exists";

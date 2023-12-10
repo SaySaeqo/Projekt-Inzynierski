@@ -12,8 +12,8 @@ import {
 } from "firebase/firestore";
 import firebaseApp from "@/initfirestore";
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import { Exhibit } from "@/models/Exhibit";
-//import { randomUUID } from "crypto";
+import { Exhibit, Widget } from "@/models/Exhibit";
+import { v4 as uuidv4 } from "uuid";
 
 const db = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
@@ -73,31 +73,62 @@ class DataService {
   }
 
   async delete(id: string) {
+    const exh = await this.getOne(id);
+    exh.widgets.forEach((el) => {
+      this.removeAllImages(el);
+    });
+    await this.removeImage(exh.icon);
+    await this.removeImage(exh.location);
     await deleteDoc(doc(db, "exhibits", id));
   }
 
   async addImage(exhibitId: string, imageFile: File) {
-    //const uuid = crypto.randomUUID();
+    const uniqueId = uuidv4();
     const extension = imageFile.name.split(".").pop();
-    const name = exhibitId + "_" + "." + extension;
+    const name = exhibitId + "_" + uniqueId + "." + extension;
     const fileRef = ref(imagesRef, name);
-    uploadBytes(fileRef, imageFile).then(() => {
+    await uploadBytes(fileRef, imageFile).then(() => {
       console.log("Uploaded a blob or file!");
     });
 
     return fileRef.name;
   }
 
-  async removeImage(name: string) {
+  async updateImage(exhibitId: string, imageFile: File, imageName: string) {
+    if (imageName != "") {
+      await this.removeImage(imageName);
+      return this.addImage(exhibitId, imageFile);
+    } else {
+      return this.addImage(exhibitId, imageFile);
+    }
+  }
+
+  async removeImage(imageLinkOrName: string) {
     // Create a reference to the file to delete
-    const imageRef = ref(imagesRef, name);
+    const imageName = this.getNameFromLink(imageLinkOrName);
+    const imageRef = ref(imagesRef, imageName);
     // Delete the file
-    await deleteObject(imageRef);
+    await deleteObject(imageRef).catch((err) => {
+      console.log(err);
+      return false;
+    });
+
+    return true;
+  }
+
+  async removeAllImages(widget: Widget) {
+    widget.imagesURLs.forEach((image) => {
+      this.removeImage(image);
+    });
   }
 
   async getImage(name: string) {
     const imageRef = ref(imagesRef, name);
-    return await getDownloadURL(imageRef);
+    return getDownloadURL(imageRef);
+  }
+
+  getNameFromLink(link: string) {
+    return link.split("/").pop()?.split("?")[0].split("%2F")?.pop();
   }
 }
 

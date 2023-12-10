@@ -34,6 +34,8 @@ export class Exhibit {
       description: this.description,
       extra: JSON.stringify(this.extra),
       widgets: JSON.stringify(this.widgets),
+      icon: this.icon,
+      location: this.location,
     };
   }
 
@@ -42,8 +44,21 @@ export class Exhibit {
     newExhibit.id = id;
     newExhibit.name = data?.name;
     newExhibit.description = data?.description;
-    newExhibit.widgets = JSON.parse(data?.widgets) as Widget[];
-    newExhibit.extra = JSON.parse(data?.extra) as ExhibitPair[];
+    newExhibit.widgets = (JSON.parse(data?.widgets) || []).map(
+      (widget: any) =>
+        new Widget(
+          widget.id,
+          widget.type,
+          widget.title,
+          widget.data,
+          widget.imagesURLs
+        )
+    );
+    newExhibit.extra = (JSON.parse(data?.extra) || []).map(
+      (extr: any) => new ExhibitPair(extr.value, extr.key, extr.linkId)
+    );
+    newExhibit.icon = data?.icon;
+    newExhibit.location = data?.location;
 
     // const pairArr: ExhibitPair[] = JSON.parse(data?.extra);
     // pairArr.forEach((el) => {
@@ -61,29 +76,46 @@ export class Widget {
   data: string;
   imagesURLs: string[];
 
-  constructor(id: number, type: string) {
+  constructor(id: number, type: string);
+  constructor(
+    id: number,
+    type: string,
+    title: string,
+    data: string,
+    imagesURLs: string[]
+  );
+  constructor(
+    id: number,
+    type: string,
+    title?: string,
+    data?: string,
+    imagesURLs?: string[]
+  ) {
     this.id = id;
     this.type = type;
-    this.title = "";
-    this.data = "";
-    this.imagesURLs = [];
+    this.title = title || "";
+    this.data = data || "";
+    this.imagesURLs = imagesURLs || [];
   }
 
-  addImageURL(name: string){
+  addImageURL(name: string) {
     this.imagesURLs.push(name);
+  }
+  removeImageURL(name: string) {
+    this.imagesURLs.splice(this.imagesURLs.indexOf(name), 1);
   }
 }
 
 export class ExhibitPair {
   value: string;
   key: string;
-  linkId: number;
+  linkId: string;
 
   constructor(value: string, key: string);
-  constructor(value: string, key: string, linkId: number);
-  constructor(value: string, key: string, linkId?: number) {
+  constructor(value: string, key: string, linkId: string);
+  constructor(value: string, key: string, linkId?: string) {
     this.value = value;
     this.key = key;
-    this.linkId = linkId || 0;
+    this.linkId = linkId || "";
   }
 }
