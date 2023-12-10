@@ -124,7 +124,7 @@ class DataService {
 
   async getImage(name: string) {
     const imageRef = ref(imagesRef, name);
-    return getDownloadURL(imageRef);
+    return await getDownloadURL(imageRef);
   }
 
   getNameFromLink(link: string) {

@@ -36,12 +36,12 @@ export default defineComponent({
       hidden: "hidden",
     };
   },
-  beforeMount() {
+  async beforeMount() {
     // get images from firebase
     console.log(this.widget.imagesURLs);
-    this.widget.imagesURLs.forEach(async (el) => {
-      this.gallery.push(await dataService.getImage(el));
-    });
+    for (const image of this.widget.imagesURLs) {
+      this.gallery.push(await dataService.getImage(image));
+    }
   },
   methods: {
     async remove(image: string) {
