@@ -29,16 +29,17 @@ export default defineComponent({
   methods: {
     submitForm(email: string, password: string) {
       const auth = getAuth(firebaseApp);
-      signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        this.store.commit("setUsername", user.displayName || user.email);
-        this.$router.push("/");
-      })
-      .catch((error) => {
-        console.error(error);
-        this.store.commit("wrongLoggin");
-      });
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          this.store.commit("setUsername", user.displayName || user.email);
+          this.$router.push("/");
+        })
+        .catch((error) => {
+          console.error(error);
+          this.store.commit("wrongLogin");
+        });
     },
   },
 

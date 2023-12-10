@@ -8,10 +8,16 @@ import {
   getFirestore,
   orderBy,
   query,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 import firebaseApp from "@/initfirestore";
-import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 import { Exhibit, Widget } from "@/models/Exhibit";
 import { v4 as uuidv4 } from "uuid";
 
