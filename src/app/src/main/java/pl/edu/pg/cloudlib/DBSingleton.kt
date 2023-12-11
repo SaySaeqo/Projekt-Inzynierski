@@ -1,14 +1,25 @@
 package pl.edu.pg.cloudlib
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.SystemClock.sleep
 import android.util.Log
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Filter
+import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.storage
+import kotlinx.coroutines.tasks.await
 
 class DBSingleton private constructor() {
     private val db = Firebase.firestore
+    private val storage = Firebase.storage
 
     companion object {
         private val dbCollectionName = "exhibits"
@@ -17,71 +28,6 @@ class DBSingleton private constructor() {
         fun getInstance() : DBSingleton{
             return instance;
         }
-    }
-
-    init {
-        exhibitTest()
-    }
-
-    fun exhibitTest() {
-
-        //userTest()
-        add("costam", "opis")
-        //sleep(1000)
-        delete("costam")
-        //sleep(1000)
-        delete("costam")
-        //sleep(4000)
-        getAll()
-    }
-
-    fun userTest() {
-        // Create a new user with a first and last name
-        var user = hashMapOf(
-            "first" to "Ada",
-            "last" to "Lovelace",
-            "born" to 1815
-        )
-
-// Add a new document with a generated ID
-        db.collection("users")
-            .add(user)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-            }
-
-        // Create a new user with a first, middle, and last name
-        user = hashMapOf(
-            "first" to "Alan",
-            "middle" to "Mathison",
-            "last" to "Turing",
-            "born" to 1912
-        )
-
-// Add a new document with a generated ID
-        db.collection("users")
-            .add(user)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-            }
-
-        db.collection("users")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.d(TAG, "${document.id} => ${document.data}")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-
     }
 
     fun add(name: String, description: String)
@@ -127,19 +73,22 @@ class DBSingleton private constructor() {
             }
     }
 
-    fun getAll() {
-        db.collection(dbCollectionName)
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.d(TAG, "One of all ${document.id} => ${document.data}")
-                }
-                if(result.isEmpty){
-                    Log.d(TAG, "No docs!")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
+    fun getAll(): Task<QuerySnapshot> {
+        var result = db.collection(dbCollectionName).orderBy("name").get();
+
+        return result;
+    }
+
+    fun getOne(id: String): Task<DocumentSnapshot> {
+        var result = db.collection(dbCollectionName).document(id).get();
+
+        return result
+    }
+
+    fun getImage(name: String): StorageReference {
+        val imagesRef = storage.getReference("images")
+        val imageRef = imagesRef.child(name)
+
+        return imageRef
     }
 }

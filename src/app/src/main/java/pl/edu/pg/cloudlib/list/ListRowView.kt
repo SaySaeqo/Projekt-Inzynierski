@@ -15,7 +15,7 @@ import pl.edu.pg.cloudlib.databinding.ListRowViewBinding
 class ListRowView : FrameLayout {
 
     private lateinit var binding: ListRowViewBinding
-
+    var id = "";
     var title
         get() = binding.title.text
         set(value) = binding.title.setText(value)

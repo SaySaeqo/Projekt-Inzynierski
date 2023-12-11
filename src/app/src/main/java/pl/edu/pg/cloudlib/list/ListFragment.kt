@@ -1,5 +1,6 @@
 package pl.edu.pg.cloudlib.list
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,8 +10,13 @@ import androidx.core.os.bundleOf
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.bumptech.glide.Glide
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import pl.edu.pg.cloudlib.DBSingleton
 import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.FragmentListBinding
@@ -24,9 +30,6 @@ import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
 class ListFragment : Fragment() {
 
     private lateinit var binding: FragmentListBinding
-
-    private val dbCollectionName = "exhibits"
-    private var db = Firebase.firestore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,35 +59,42 @@ class ListFragment : Fragment() {
                 }
         }
 
-        val db1 = DBSingleton.getInstance()
-        //db1.add("dodane", "opis dodanego")
 
-        db.collection(dbCollectionName)
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    if (document.data["name"].toString().contains(searchText)){
-                        addRow(document.data["name"].toString(), document.data["description"].toString(), "dbExampleMessage")
-                    }
+        val db = DBSingleton.getInstance()
+        db.getAll().addOnSuccessListener { result ->
+            for ( doc in result){
+                if(doc.data["name"].toString().contains(searchText)){
+                    addRow(doc, context);
                 }
             }
-            .addOnFailureListener { exception ->
-                Log.w(DBSingleton.TAG, "Error getting documents.", exception)
-            }
+        }
 
         return binding.root
     }
 
-    fun addRow(title: String, subtitle: String, fragmentMessage: String) {
+    fun addRow(doc: QueryDocumentSnapshot, context: Context?){
         val row = ListRowView(requireContext())
-        row.title = title
-        row.subtitle = subtitle
-        row.imageView.setImageDrawable(null)
-        row.fragmentMessage = fragmentMessage
+        row.id = doc.id
+        row.title = doc.data["name"].toString();
+        row.subtitle = doc.data["description"].toString();
+        if(doc.data["icon"].toString() != "") {
+            DBSingleton.getInstance().getImage(doc.data["icon"].toString()).downloadUrl.addOnSuccessListener {
+                Glide.with(requireContext())
+                    .load(it)
+                    .into(row.imageView)
+                row.fragmentMessage = ""
+            }.addOnFailureListener(){
+                Log.d("ListFragment", "Failed to load image")
+            }
+        }
+        else {
+            row.imageView.setImageDrawable(null)
+        }
 
         row.setOnClickListener {_ ->
             setFragmentResult(ExhibitFragment.BUNDLE_KEY,
-                bundleOf(ExhibitFragment.BUNDLE_KEY to row.fragmentMessage)
+                bundleOf(ExhibitFragment.BUNDLE_KEY to row.fragmentMessage,
+                    ExhibitFragment.BUNDLE_ID to row.id)
             )
         }
 
