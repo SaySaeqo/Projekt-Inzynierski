@@ -162,7 +162,7 @@ class ExhibitFragment : Fragment() {
                             if(e.linkId != "") {
                                 setFragmentResult(
                                     BUNDLE_KEY,
-                                    bundleOf(BUNDLE_KEY to e.linkId,
+                                    bundleOf(BUNDLE_KEY to "",
                                         BUNDLE_ID to e.linkId)
                                 )
                             }

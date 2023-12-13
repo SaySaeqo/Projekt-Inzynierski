@@ -50,5 +50,4 @@ class ListRowView : FrameLayout {
         binding = ListRowViewBinding.inflate(LayoutInflater.from(context))
         addView(binding.root)
     }
-
 }

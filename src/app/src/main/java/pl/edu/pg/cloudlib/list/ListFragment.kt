@@ -40,26 +40,6 @@ class ListFragment : Fragment() {
         activity?.title = getString(R.string.list_page_title)
         val searchText = arguments?.getString(SearchFragment.BUNDLE_KEY) ?: ""
 
-
-        // for exhibit in db
-        val row = ListRowView(requireContext())
-        row.title = "test title"
-        row.subtitle = "test subtitle"
-        row.imageView.setImageDrawable(null)
-        row.fragmentMessage = "test message"
-        binding.root.addView(row)
-
-        binding.root.forEach {
-            if (it is ListRowView)
-                it.setOnClickListener {_ ->
-                    setFragmentResult(
-                        ExhibitFragment.BUNDLE_KEY,
-                        bundleOf(ExhibitFragment.BUNDLE_KEY to it.fragmentMessage)
-                    )
-                }
-        }
-
-
         val db = DBSingleton.getInstance()
         db.getAll().addOnSuccessListener { result ->
             for ( doc in result){
@@ -77,12 +57,12 @@ class ListFragment : Fragment() {
         row.id = doc.id
         row.title = doc.data["name"].toString();
         row.subtitle = doc.data["description"].toString();
+        row.fragmentMessage = ""
         if(doc.data["icon"].toString() != "") {
             DBSingleton.getInstance().getImage(doc.data["icon"].toString()).downloadUrl.addOnSuccessListener {
                 Glide.with(requireContext())
                     .load(it)
                     .into(row.imageView)
-                row.fragmentMessage = ""
             }.addOnFailureListener(){
                 Log.d("ListFragment", "Failed to load image")
             }
