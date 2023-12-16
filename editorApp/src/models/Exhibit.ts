@@ -110,11 +110,12 @@ export class ExhibitPair {
   key: string;
   linkId: string;
 
+  constructor();
   constructor(value: string, key: string);
   constructor(value: string, key: string, linkId: string);
-  constructor(value: string, key: string, linkId?: string) {
-    this.value = value;
-    this.key = key;
+  constructor(value?: string, key?: string, linkId?: string) {
+    this.value = value || "";
+    this.key = key || "";
     this.linkId = linkId || "";
   }
 }

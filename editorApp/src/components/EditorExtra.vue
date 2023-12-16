@@ -1,129 +1,101 @@
 <template>
-    <div class="extra">
-        <div class="item" v-for="x in exhibit.extra" :key="x.key">
-        <p>{{ x.key }}</p>
-        <input type="text" v-model="x.value" />
-        <select v-model="x.linkId">
-          <option v-for="exhibit in exhibits" :key="exhibit.id" :value="exhibit.id">
-            {{ exhibit.name }}
-          </option>
-        </select>
-        <div>
-            <button @click="saveExtras(x)">SAVE</button>
-            <button @click="removeExtras(x)">REMOVE</button>
-        </div>
-        </div>
-        <div class="item">
-            <input type="text" v-model="extra_key" />
-            <input type="text" v-model="extra_value" />
-            <select v-model="selectedExhibit">
-              <option v-for="exhibit in exhibits" :key="exhibit.id" :value="exhibit.id">
-                {{ exhibit.name }}
-              </option>
-            </select>
-            <button class="add" @click="addExtras">ADD</button>
-        </div>
-        <p>{{ error_msg }}</p>
+  <div class="extra">
+    <div class="item" v-for="x in [...extras, newExtra]" :key="x.key">
+      <label v-if="x !== newExtra" :for="'extra-'+x.key">{{ x.key }}</label>
+      <input v-else type="text" v-model="x.key" />
+      <input :id="'extra-'+x.key" type="text" v-model="x.value" />
+      <select v-model="x.linkId">
+        <option v-for="exhibit in exhibits" :key="exhibit.id" :value="exhibit.id">
+          {{ exhibit.name }}
+        </option>
+      </select>
+      <button v-if="x !== newExtra" @click="remove(x)">REMOVE</button>
+      <button v-else @click="add">ADD</button>
     </div>
-  </template>
-  
-  <script lang="ts">
-  import { defineComponent, PropType } from "vue";
-  import BaseWidget from "./BaseWidget.vue";
-  import dataService from "../services/DataService";
-import { Exhibit, ExhibitPair } from "@/models/Exhibit";
-  
-  export default defineComponent({
-    props: {
-      exhibit: {
-        type: Exhibit,
-        required: true,
-      },
-    },
-    components: {
-      BaseWidget,
-    },
-    data() {
-      return {
-        extra_key: "",
-        extra_value: "",
-        error_msg: "",
-        exhibits: [] as Exhibit[],
-        selectedExhibit: "",
-      };
-    },
-    created() {
-      this.getExhibit();
-    },
-    methods: {
-      async getExhibit() {
-        this.exhibits = await dataService.getAll();
-      },
-      addExtras() {
-        if (this.extra_key.length > 0 && this.extra_value.length > 0) {
-          if (!this.exhibit.extra.some(item => item.key === this.extra_key)) {
-            this.exhibit.extra.push(new ExhibitPair(this.extra_value, this.extra_key, this.selectedExhibit ));
-            this.extra_key = "";
-            this.extra_value = "";
-            this.selectedExhibit = "";
-            this.error_msg = "";
-          } else {
-            this.error_msg = "An item with this key already exists";
-          }
-        } else {
-          this.error_msg = "Please fill in both fields";
-        }
-      },
-      removeExtras(extra: ExhibitPair) {
-        const index = this.exhibit.extra.findIndex(item => item.key === extra.key);
-        if (index !== -1) {
-          this.exhibit.extra.splice(index, 1);
-        }
-      },
-      saveExtras(extra: ExhibitPair) {
-        const index = this.exhibit.extra.findIndex(item => item.key === extra.key);
-        if (index !== -1) {
-          this.exhibit.extra.splice(index, 1, extra);
-        }
-      },
-    },
-  });
-  </script>
-  
-  <style lang="scss" scoped>
-  .extra {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 1em;
-  
-    .item {
-      gap: 1em;
-      align-items: center;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 2fr;
-      max-width: 30em;
+    <p class="error">{{ errorMsg }}</p>
+  </div>
+</template>
 
-      input {
-        max-width: 8em;
+<script lang="ts">
+import { defineComponent, PropType } from "vue";
+import dataService from "../services/DataService";
+import { Exhibit, ExhibitPair } from "@/models/Exhibit";
+
+export default defineComponent({
+  props: {
+    modelValue: {
+      type: Object as PropType<ExhibitPair[]>,
+      required: true,
+    },
+  },
+  emits: ["update:modelValue"],
+  data() {
+    return {
+      newExtra: new ExhibitPair(),
+      errorMsg: "",
+      exhibits: [] as Exhibit[],
+      extras: this.modelValue,
+    };
+  },
+  async beforeMount() {
+    this.exhibits = await dataService.getAll();
+    this.exhibits = [new Exhibit(), ...this.exhibits]
+  },
+  methods: {
+    add() {
+      if (!this.newExtra.key || !this.newExtra.value) this.errorMsg = "Please fill in both fields";
+      else if (this.extras.some(item => item.key === this.newExtra.key)) this.errorMsg = "An item with this key already exists";
+      else {
+        this.extras.push(this.newExtra);
+        this.$emit("update:modelValue", this.extras);
+        this.newExtra = new ExhibitPair();
+        this.errorMsg = "";
       }
-      select {
-        max-width: 10em;
-      }
-    }
+    },
+    remove(extra: ExhibitPair) {
+      this.extras = this.extras.filter(item => item.key !== extra.key);
+      this.$emit("update:modelValue", this.extras);
+    },
+  },
+});
+</script>
   
-    .add {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1em;
-      border: 1px solid black;
-    }
-  
-    .add:hover {
-      background-color: #f0f0f0;
-      cursor: pointer;
-    }
-  }
-  </style>
+<style lang="scss" scoped>
+.extra {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  gap: 1em;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+input {
+  min-width: 0;
+}
+
+label:hover {
+  cursor: pointer;
+}
+
+.add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1em;
+  border: 1px solid black;
+}
+
+.add:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+}
+</style>
   

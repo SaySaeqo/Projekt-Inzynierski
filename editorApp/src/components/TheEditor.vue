@@ -1,17 +1,16 @@
 <template>
   <main>
-    <section>
-      <ul>
+    <section class="top">
         <p>id: {{ exhibit.id }}</p>
         <div class="name">
           <label for="name">Name:</label>
           <input id="name" type="text" v-model="exhibit.name" class="name" />
         </div>
         <button @click="saveExhibit">Save</button>
-      </ul>
     </section>
-    <section>
+    <section class="bottom">
       <div class="tools">
+        <button @click="consoleLog">Console log</button>
         <button @click="addGallery">Add Gallery</button>
         <button @click="addText">Add Text</button>
         <button @click="addLink">Add Link</button>
@@ -37,19 +36,18 @@
           @remove="removeWidget(widget)"
         />
       </div>
-      <EditorExtra :exhibit="exhibit" />
+      <EditorExtra v-model="exhibit.extra" v-if="exhibit.id" />
     </section>
   </main>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Exhibit, Widget } from "@/models/Exhibit";
 import BaseWidget from "./BaseWidget.vue";
 import { useRoute } from "vue-router";
 import dataService from "../services/DataService";
 import EditorExtra from "./EditorExtra.vue";
-
+import { ExhibitPair, Widget, Exhibit } from "@/models/Exhibit";
 export default defineComponent({
   components: {
     BaseWidget,
@@ -66,8 +64,9 @@ export default defineComponent({
       locationSrc: "",
     };
   },
-  async created() {
-    await this.getExhibit(useRoute().params.id as string);
+  async beforeMount() {
+    const id = useRoute().params.id as string;
+    await this.getExhibit(id);
     this.iconSrc = await dataService.getImage(this.exhibit.icon).catch(() => {
       return "";
     });
@@ -76,14 +75,12 @@ export default defineComponent({
       .catch(() => {
         return "";
       });
-  },
-  beforeMount() {
-    let id = useRoute().params.id;
-    // this.exhibit = fromDb(id);
-    this.exhibit.id = id as string;
     this.generatedId = this.exhibit.widgets.length;
   },
   methods: {
+    consoleLog() {
+      console.log(this.exhibit);
+    },
     addGallery() {
       this.exhibit.widgets.push(new Widget(this.generatedId++, "gallery"));
     },
@@ -168,18 +165,22 @@ main {
   flex-direction: column;
   align-items: stretch;
   border: 1px solid black;
+  gap: 1em;
+  padding: 1em;
 }
 section {
-  display: flex;
-  justify-content: center;
+  display: grid;
 }
-ul {
-  flex: 1;
-  display: flex;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.top {
+  grid-template-columns: 1fr 4fr 1fr;
+  justify-items: stretch;
 }
+
+.bottom {
+  grid-template-columns: 2fr 3fr 2fr;
+  justify-items: center;
+}
+
 p {
   margin: 0;
   padding: 1em;
@@ -202,11 +203,8 @@ p {
     font-size: 1.2em;
   }
 }
-
-button {
-  padding: 1em;
-}
 .preview {
+  justify-self: center;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -223,10 +221,12 @@ button {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+
+  button {
   padding: 1em;
 }
 
-.insert-img {
+  .insert-img {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -235,8 +235,9 @@ button {
   border: 1px solid black;
 
   img {
-    width: 20em;
     min-height: 10em;
+    max-height: 15em;
+    max-width: 20em;
     object-fit: contain;
     background-image: url("../assets/plus.png");
     background-size: auto;
@@ -252,5 +253,6 @@ button {
     cursor: pointer;
     opacity: 1;
   }
+}
 }
 </style>
