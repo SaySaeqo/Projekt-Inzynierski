@@ -5,9 +5,9 @@
         <router-link to="/">List</router-link>
       </li>
       <li>
-        <div v-if="isLoggedIn()" class="logout">
+        <div v-if="isLoggedIn" class="logout">
           <a @click="logout">Logout</a>
-          <p>Logged in as {{ store.state.username }}</p>
+          <p>Logged in as {{ username }}</p>
         </div>
         <router-link v-else to="/login">Login</router-link>
       </li>
@@ -16,29 +16,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useStore } from "vuex";
-import { getAuth, signOut } from "firebase/auth";
+import { defineComponent, reactive, ref } from "vue";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 
 export default defineComponent({
+  data() {
+    return {
+      user: getAuth().currentUser,
+    };
+  },
+  beforeMount() {
+    const _this = this;
+    onAuthStateChanged(getAuth(), newUser => _this.user = newUser);
+  },
+  computed: {
+    username(): string {
+      return this.user?.displayName || this.user?.email || "anonymous";
+    },
+    isLoggedIn(): boolean {
+      return this.user !== null;
+    },
+  },
   methods: {
     async logout() {
-      const auth = getAuth();
       try {
-        await signOut(auth);
-        this.store.commit("setUsername", "");
+        await signOut(getAuth());
         this.$router.push("/login");
       } catch (error) {
         console.error(error);
       }
     },
-    isLoggedIn() {
-      return this.store.state.username !== "";
-    },
-  },
-  setup() {
-    const store = useStore();
-    return { store };
   },
 });
 </script>

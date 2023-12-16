@@ -16,9 +16,8 @@
 
 <script lang="ts">
 import firebaseApp from "@/initfirestore";
-import { applyActionCode, getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { defineComponent } from "vue";
-import { useStore } from "vuex";
 export default defineComponent({
   data() {
     return {
@@ -33,20 +32,15 @@ export default defineComponent({
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          this.store.commit("setUsername", user.displayName || user.email);
           this.$router.push("/");
         })
         .catch((error) => {
           console.error(error);
-          this.store.commit("wrongLogin");
+          alert("Wrong username or password");
         });
     },
   },
 
-  setup() {
-    const store = useStore();
-    return { store };
-  },
 });
 </script>
 
