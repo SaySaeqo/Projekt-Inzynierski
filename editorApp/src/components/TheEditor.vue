@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main v-if="dataLoaded">
     <section class="top">
         <p>id: {{ exhibit.id }}</p>
         <div class="name">
@@ -14,16 +14,8 @@
         <button @click="addGallery">Add Gallery</button>
         <button @click="addText">Add Text</button>
         <button @click="addLink">Add Link</button>
-        <div class="insert-img">
-          <label for="icon">Insert icon:</label>
-          <input id="icon" type="file" ref="iconInput" @change="onIconChange" />
-          <img :src="iconSrc" alt="" @click="triggerClick('iconInput')" />
-        </div>
-        <div class="insert-img">
-          <label for="location">Insert location:</label>
-          <input id="location" type="file" ref="locationInput" @change="onLocationChange" />
-          <img :src="locationSrc" alt="" @click="triggerClick('locationInput')" />
-        </div>
+        <EditorImageUpload v-model="iconFile" name="icon" :src="iconSrc" />
+        <EditorImageUpload v-model="locationFile" name="location" :src="locationSrc" />
       </div>
       <div class="preview">
         <BaseWidget
@@ -36,22 +28,27 @@
           @remove="removeWidget(widget)"
         />
       </div>
-      <EditorExtra v-model="exhibit.extra" v-if="exhibit.id" />
+      <EditorExtra v-model="exhibit.extra" />
     </section>
+  </main>
+  <main v-else>
+    <p>Loading...</p>
   </main>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, nextTick } from "vue";
 import BaseWidget from "./BaseWidget.vue";
 import { useRoute } from "vue-router";
 import dataService from "../services/DataService";
 import EditorExtra from "./EditorExtra.vue";
+import EditorImageUpload from "./EditorImageUpload.vue";
 import { ExhibitPair, Widget, Exhibit } from "@/models/Exhibit";
 export default defineComponent({
   components: {
     BaseWidget,
     EditorExtra,
+    EditorImageUpload,
   },
   data() {
     return {
@@ -59,12 +56,15 @@ export default defineComponent({
       generatedId: 0,
       extra_key: "",
       extra_value: "",
-      error_msg: "",
+      errorMsg: "",
+      iconFile: null as File | null,
       iconSrc: "",
+      locationFile: null as File | null,
       locationSrc: "",
+      dataLoaded: false,
     };
   },
-  async beforeMount() {
+  async created() {
     const id = useRoute().params.id as string;
     await this.getExhibit(id);
     this.iconSrc = await dataService.getImage(this.exhibit.icon).catch(() => {
@@ -76,6 +76,7 @@ export default defineComponent({
         return "";
       });
     this.generatedId = this.exhibit.widgets.length;
+    this.dataLoaded = true;
   },
   methods: {
     consoleLog() {
@@ -112,48 +113,28 @@ export default defineComponent({
     async getExhibit(id: string) {
       this.exhibit = await dataService.getOne(id);
     },
-    saveExhibit() {
-      if (this.exhibit.name) {
+    async saveExhibit() {
+      if (!this.exhibit.name) this.errorMsg = "Exhibit has to have a name";
+      else {
         this.exhibit.description = "";
+        if (this.iconFile) {
+          const name = await dataService.updateImage(
+            this.exhibit.id,
+            this.iconFile,
+            this.iconSrc
+          );
+          this.exhibit.icon = name;
+        }
+        if (this.locationFile) {
+          const name = await dataService.updateImage(
+            this.exhibit.id,
+            this.locationFile,
+            this.locationSrc
+          );
+          this.exhibit.location = name;
+        }
         dataService.update(this.exhibit);
-      } else {
-        this.error_msg = "Exhibit has to have a name";
       }
-    },
-    onIconChange(e: Event) {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const name = await dataService.updateImage(
-          this.exhibit.id,
-          file,
-          this.iconSrc
-        );
-        this.exhibit.icon = name;
-        await dataService.update(this.exhibit);
-        this.iconSrc = await dataService.getImage(name);
-      };
-      reader.readAsDataURL(file);
-    },
-    onLocationChange(e: Event) {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const name = await dataService.updateImage(
-          this.exhibit.id,
-          file,
-          this.locationSrc
-        );
-        this.exhibit.location = name;
-        await dataService.update(this.exhibit);
-        this.locationSrc = await dataService.getImage(name);
-      };
-      reader.readAsDataURL(file);
-    },
-    triggerClick(refName: string) {
-      (this.$refs[refName] as HTMLElement).click();
     },
   },
 });
@@ -223,36 +204,7 @@ p {
   align-items: stretch;
 
   button {
-  padding: 1em;
-}
-
-  .insert-img {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 1em;
-  padding: 1em;
-  border: 1px solid black;
-
-  img {
-    min-height: 10em;
-    max-height: 15em;
-    max-width: 20em;
-    object-fit: contain;
-    background-image: url("../assets/plus.png");
-    background-size: auto;
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 0.7;
+    padding: 1em;
   }
-  input {
-    display: none;
-  }
-
-  img:hover {
-    cursor: pointer;
-    opacity: 1;
-  }
-}
 }
 </style>
