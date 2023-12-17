@@ -53,12 +53,10 @@ class DataService {
 
   async getOne(id: string) {
     const snap = await getDoc(doc(db, "exhibits", id));
-    console.log(Exhibit.fromFirebaseConverter(snap.id, snap.data()));
     return Exhibit.fromFirebaseConverter(snap.id, snap.data());
   }
 
   async create(exhibit: Exhibit) {
-    console.log(exhibit.toFirestoreConverter());
     await addDoc(collection(db, "exhibits"), exhibit.toFirestoreConverter());
   }
 
@@ -71,7 +69,6 @@ class DataService {
   }
 
   async update(exhibit: Exhibit) {
-    console.log(exhibit.toFirestoreConverter());
     await updateDoc(
       doc(db, "exhibits", exhibit.id),
       exhibit.toFirestoreConverter()

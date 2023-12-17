@@ -11,9 +11,9 @@
     <section class="bottom">
       <div class="tools">
         <button @click="consoleLog">Console log</button>
-        <button @click="addGallery">Add Gallery</button>
-        <button @click="addText">Add Text</button>
-        <button @click="addLink">Add Link</button>
+        <button @click="addWidget('gallery')">Add Gallery</button>
+        <button @click="addWidget('text')">Add Text</button>
+        <button @click="addWidget('link')">Add Link</button>
         <EditorImageUpload v-model="iconFile" name="icon" :src="iconSrc" />
         <EditorImageUpload v-model="locationFile" name="location" :src="locationSrc" />
       </div>
@@ -23,6 +23,7 @@
           :key="widget.id"
           :exhibit="exhibit"
           :widget="widget"
+          :changes="widgetChanges"
           @up="moveWidgetUp(widget)"
           @down="moveWidgetDown(widget)"
           @remove="removeWidget(widget)"
@@ -53,7 +54,10 @@ export default defineComponent({
   data() {
     return {
       exhibit: new Exhibit(),
+      widgetChanges: new Map<number, Map<string,Object[]>>(),
+      widgetRemoved: [] as Widget[],
       generatedId: 0,
+      maxDbWidgetId: 0,
       extra_key: "",
       extra_value: "",
       errorMsg: "",
@@ -67,29 +71,26 @@ export default defineComponent({
   async created() {
     const id = useRoute().params.id as string;
     await this.getExhibit(id);
-    this.iconSrc = await dataService.getImage(this.exhibit.icon).catch(() => {
-      return "";
-    });
+    this.iconSrc = await dataService.getImage(this.exhibit.icon).catch(() => "");
     this.locationSrc = await dataService
       .getImage(this.exhibit.location)
-      .catch(() => {
-        return "";
-      });
+      .catch(() => "");
+    
+    this.exhibit.widgets.forEach((widget, index) => widget.id = index);
     this.generatedId = this.exhibit.widgets.length;
+    this.maxDbWidgetId = this.exhibit.widgets.length - 1;
+    for (const widget of this.exhibit.widgets) {
+      this.widgetChanges.set(widget.id, new Map<string,Object[]>());
+    }
     this.dataLoaded = true;
   },
   methods: {
     consoleLog() {
       console.log(this.exhibit);
     },
-    addGallery() {
-      this.exhibit.widgets.push(new Widget(this.generatedId++, "gallery"));
-    },
-    addText() {
-      this.exhibit.widgets.push(new Widget(this.generatedId++, "text"));
-    },
-    addLink() {
-      this.exhibit.widgets.push(new Widget(this.generatedId++, "link"));
+    addWidget(type: string) {
+      this.widgetChanges.set(this.generatedId, new Map<string,Object[]>());
+      this.exhibit.widgets.push(new Widget(this.generatedId++, type));
     },
     moveWidgetUp(widget: Widget) {
       let index = this.exhibit.widgets.indexOf(widget);
@@ -108,7 +109,9 @@ export default defineComponent({
     removeWidget(widget: Widget) {
       let index = this.exhibit.widgets.indexOf(widget);
       this.exhibit.widgets.splice(index, 1);
-      dataService.removeAllImages(widget);
+      if (widget.id <= this.maxDbWidgetId) this.widgetRemoved.push(widget);
+      this.widgetChanges.delete(widget.id);
+      
     },
     async getExhibit(id: string) {
       this.exhibit = await dataService.getOne(id);
@@ -124,6 +127,7 @@ export default defineComponent({
             this.iconSrc
           );
           this.exhibit.icon = name;
+          this.iconFile = null;
         }
         if (this.locationFile) {
           const name = await dataService.updateImage(
@@ -132,8 +136,32 @@ export default defineComponent({
             this.locationSrc
           );
           this.exhibit.location = name;
+          this.locationFile = null;
         }
-        dataService.update(this.exhibit);
+
+
+        for (let removed = this.widgetRemoved.pop(); removed; removed = this.widgetRemoved.pop()) {
+          dataService.removeAllImages(removed);
+        }
+        
+        for (const key of this.widgetChanges.keys()) {
+          const gallery = this.widgetChanges.get(key) as Map<string, Object[]>;
+          const added = gallery.get("added") as File[] || [];
+          const removed = gallery.get("removed") as string[] || [];
+
+          for(const file of added) {
+            const name = await dataService.addImage(this.exhibit.id, file);
+            this.exhibit.widgets.find(widget => widget.id === key)!.addImageURL(name);
+          }
+          gallery.delete("added");
+
+          for (const image of removed) {
+            if (! await dataService.removeImage(image)) continue;
+            this.exhibit.widgets.find(widget => widget.id === key)!.removeImageURL(dataService.getNameFromLink(image) as string);
+          }
+          gallery.delete("removed");
+        }
+        await dataService.update(this.exhibit);
       }
     },
   },
@@ -190,7 +218,6 @@ p {
   flex-direction: column;
   justify-content: flex-start;
   gap: 1em;
-  align-items: stretch;
   border: 1px solid black;
   padding: 1em;
   width: 30em;

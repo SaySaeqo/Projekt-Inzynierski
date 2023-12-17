@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType, watch } from "vue";
 import { Exhibit, Widget } from "@/models/Exhibit";
 import dataService from "../services/DataService";
 
@@ -29,46 +29,81 @@ export default defineComponent({
       type: Widget,
       required: true,
     },
+    changes: {
+      type: Object as PropType<Map<number, Map<string,Object[]>>>,
+      required: true,
+    },
   },
   data() {
     return {
       gallery: [] as string[],
-      hidden: "hidden",
+      addedUrls: new Map<string, File>(),
     };
   },
-  async beforeMount() {
-    // get images from firebase
-    console.log(this.widget.imagesURLs);
-    for (const image of this.widget.imagesURLs) {
-      this.gallery.push(await dataService.getImage(image));
+  async created() {
+    this.initialize();
+  },
+  mounted() {
+    watch(
+      () => this.changes.get(this.widget.id)?.get("added"),
+      (newVal, oldVal) => {
+        if (Array.isArray(oldVal) && oldVal.length > 0 && newVal === undefined) {
+          this.initialize();
+        }
+      }
+    );
+  },
+  unmounted() {
+    for (const url of this.addedUrls.keys()) {
+      URL.revokeObjectURL(url);
     }
   },
   methods: {
-    async remove(image: string) {
-      if (await dataService.removeImage(image)) {
-        this.widget.removeImageURL(dataService.getNameFromLink(image) || "");
-        this.gallery.splice(this.gallery.indexOf(image), 1);
-        await dataService.update(this.exhibit);
+    async initialize() {
+      this.gallery = [];
+      for (const url of this.addedUrls.keys()) {
+        URL.revokeObjectURL(url);
       }
+      this.addedUrls = new Map<string, File>();
+      for (const image of this.widget.imagesURLs) {
+        this.gallery.push(await dataService.getImage(image));
+      }
+    },
+    remove(image: string) {
+      const myChanges = this.changes.get(this.widget.id)!;
+
+      // if added in this session, remove from added
+      const added = myChanges.get("added") as File[] ?? [] as File[];
+      const file = this.addedUrls.get(image);
+      if (file) {
+        added.splice(added.indexOf(file), 1);
+        myChanges.set("added", added);
+        this.gallery.splice(this.gallery.indexOf(image), 1);
+        URL.revokeObjectURL(image);
+        this.addedUrls.delete(image);
+        return;
+      }
+
+      const removed = myChanges.get("removed") ?? [] as string[];
+      removed.push(image);
+      myChanges.set("removed", removed);
+      this.gallery.splice(this.gallery.indexOf(image), 1);
     },
     add() {
       (this.$refs.fileInput as HTMLInputElement).click();
     },
     handleFileUpload(event: Event) {
       const file = (event.target as HTMLInputElement).files?.[0];
-      // Now you can do whatever you want with the file...
-      // example
-      if (file) {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = async () => {
-          const name = await dataService.addImage(this.exhibit.id, file);
-          this.widget.addImageURL(name);
-          await dataService.update(this.exhibit);
-          const imageLink = await dataService.getImage(name);
-          this.gallery.push(imageLink);
-        };
-      }
+      if (!file) return;
+
+      const myChanges = this.changes.get(this.widget.id)!;
+      const added = myChanges.get("added") ?? [] as File[];
+      added.push(file);
+      myChanges.set("added", added);
+      
+      const url = URL.createObjectURL(file);
+      this.gallery.push(url);
+      this.addedUrls.set(url, file);
     },
   },
 });
@@ -86,6 +121,7 @@ export default defineComponent({
 img {
   object-fit: contain;
   max-height: 3em;
+  max-width: 100%;
 }
 .big {
   max-height: 15em;

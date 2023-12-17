@@ -12,7 +12,7 @@ import { PropType, defineComponent } from "vue";
 export default defineComponent({
     props: {
         modelValue: {
-            type: Object as PropType<File | null>,
+            type: Object as PropType<File|null>,
             required: true,
         },
         name: {

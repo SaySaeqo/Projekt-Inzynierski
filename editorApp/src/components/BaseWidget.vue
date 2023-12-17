@@ -4,6 +4,7 @@
       v-if="widget.type === 'gallery'"
       :exhibit="exhibit"
       :widget="widget"
+      :changes="changes"
     />
     <WidgetText
       v-if="widget.type === 'text'"
@@ -25,7 +26,7 @@
 
 <script lang="ts">
 import { Exhibit, Widget } from "@/models/Exhibit";
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import WidgetGallery from "./WidgetGallery.vue";
 import WidgetText from "./WidgetText.vue";
 import WidgetLink from "./WidgetLink.vue";
@@ -38,6 +39,10 @@ export default defineComponent({
     },
     widget: {
       type: Widget,
+      required: true,
+    },
+    changes: {
+      type: Object as PropType<Map<number, Map<string,Object[]>>>,
       required: true,
     },
   },
