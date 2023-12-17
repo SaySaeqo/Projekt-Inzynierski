@@ -6,7 +6,12 @@
           <label for="name">Name:</label>
           <input id="name" type="text" v-model="exhibit.name" class="name" />
         </div>
-        <button @click="saveExhibit">Save</button>
+        <div class="saveContainer">
+          <button @click="saveExhibit">Save</button>
+          <transition name="fade">
+            <div v-if="showPopup" class="popup">Saved!</div>
+          </transition>
+        </div>
     </section>
     <section class="bottom">
       <div class="tools">
@@ -66,6 +71,7 @@ export default defineComponent({
       locationFile: null as File | null,
       locationSrc: "",
       dataLoaded: false,
+      showPopup: false,
     };
   },
   async created() {
@@ -162,6 +168,11 @@ export default defineComponent({
           gallery.delete("removed");
         }
         await dataService.update(this.exhibit);
+
+        this.showPopup = true;
+        setTimeout(() => {
+          this.showPopup = false;
+        }, 500); // Change this to control how long the popup is visible
       }
     },
   },
@@ -183,6 +194,32 @@ section {
 .top {
   grid-template-columns: 1fr 4fr 1fr;
   justify-items: stretch;
+
+  .saveContainer {
+    position: relative;
+    
+    button {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .popup {
+      position: absolute;
+      /* Adjust these to position the popup below the save button */
+      top: 100%;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #eeeeeebb;
+      border: 1px solid black;
+      border-radius: 0.5em;
+      padding-top: 0.5em;
+      margin-top: 0.5em;
+    }
+  }
 }
 
 .bottom {
@@ -233,5 +270,12 @@ p {
   button {
     padding: 1em;
   }
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>
