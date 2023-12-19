@@ -8,14 +8,14 @@
         </div>
         <div class="saveContainer">
           <button @click="saveExhibit">Save</button>
-          <transition name="fade">
+          <!-- <transition name="fade">
             <div v-if="showPopup" class="popup">Saved!</div>
-          </transition>
+          </transition> -->
         </div>
     </section>
     <section class="bottom">
       <div class="tools">
-        <button @click="consoleLog">Console log</button>
+        <!-- <button @click="consoleLog">Console log</button> -->
         <button @click="addWidget('gallery')">Add Gallery</button>
         <button @click="addWidget('text')">Add Text</button>
         <button @click="addWidget('link')">Add Link</button>
@@ -42,13 +42,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick } from "vue";
+import { defineComponent } from "vue";
 import BaseWidget from "./BaseWidget.vue";
 import { useRoute } from "vue-router";
 import dataService from "../services/DataService";
 import EditorExtra from "./EditorExtra.vue";
 import EditorImageUpload from "./EditorImageUpload.vue";
-import { ExhibitPair, Widget, Exhibit } from "@/models/Exhibit";
+import { Widget, Exhibit } from "@/models/Exhibit";
 export default defineComponent({
   components: {
     BaseWidget,
@@ -62,8 +62,6 @@ export default defineComponent({
       widgetRemoved: [] as Widget[],
       generatedId: 0,
       maxDbWidgetId: 0,
-      extra_key: "",
-      extra_value: "",
       errorMsg: "",
       iconFile: null as File | null,
       iconSrc: "",
@@ -76,19 +74,23 @@ export default defineComponent({
     };
   },
   async created() {
+    // load exhibit
     const id = useRoute().params.id as string;
-    await this.getExhibit(id);
+    this.exhibit = await dataService.getOne(id);
+
+    // load images
     this.iconSrc = await dataService.getImage(this.exhibit.icon).catch(() => "");
-    this.locationSrc = await dataService
-      .getImage(this.exhibit.location)
-      .catch(() => "");
-    
+    this.locationSrc = await dataService.getImage(this.exhibit.location).catch(() => "");
+
+    // initialize widgets
     this.exhibit.widgets.forEach((widget, index) => widget.id = index);
     this.generatedId = this.exhibit.widgets.length;
     this.maxDbWidgetId = this.exhibit.widgets.length - 1;
     for (const widget of this.exhibit.widgets) {
       this.widgetChanges.set(widget.id, new Map<string,Object[]>());
     }
+
+    // notify view that data is loaded
     this.dataLoaded = true;
   },
   methods: {
@@ -118,10 +120,6 @@ export default defineComponent({
       this.exhibit.widgets.splice(index, 1);
       if (widget.id <= this.maxDbWidgetId) this.widgetRemoved.push(widget);
       this.widgetChanges.delete(widget.id);
-      
-    },
-    async getExhibit(id: string) {
-      this.exhibit = await dataService.getOne(id);
     },
     async saveExhibit() {
       if (!this.exhibit.name) this.errorMsg = "Exhibit has to have a name";
@@ -150,10 +148,7 @@ export default defineComponent({
           this.exhibit.location = "";
         }
 
-
-        for (let removed = this.widgetRemoved.pop(); removed; removed = this.widgetRemoved.pop()) {
-          dataService.removeAllImages(removed);
-        }
+        this.widgetRemoved.forEach(widget => dataService.removeAllImages(widget));
         
         for (const key of this.widgetChanges.keys()) {
           const gallery = this.widgetChanges.get(key) as Map<string, Object[]>;
