@@ -4,7 +4,9 @@
         <p>id: {{ exhibit.id }}</p>
         <div class="name">
           <label for="name">Name:</label>
-          <input id="name" type="text" v-model="exhibit.name" class="name" />
+          <input id="name" type="text" v-model="exhibit.name" />
+          <label for="description">Description:</label>
+          <input id="description" type="text" v-model="exhibit.description" />
         </div>
         <div class="saveContainer">
           <button @click="saveExhibit">Save</button>
@@ -124,7 +126,6 @@ export default defineComponent({
     async saveExhibit() {
       if (!this.exhibit.name) this.errorMsg = "Exhibit has to have a name";
       else {
-        this.exhibit.description = "";
         if (this.iconFile) {
           const name = await dataService.updateImage(
             this.exhibit.id,
@@ -194,6 +195,7 @@ section {
 .top {
   grid-template-columns: 1fr 4fr 1fr;
   justify-items: stretch;
+  row-gap: 1em;
 
   .saveContainer {
     position: relative;
@@ -234,8 +236,9 @@ p {
 }
 
 .name {
-  display: flex;
+  display: grid;
   flex: 1;
+  grid-template-columns: auto 1fr;
   align-items: center;
   padding: 0 1.5em;
   gap: 1em;
