@@ -31,6 +31,7 @@ export default defineComponent({
     return {
       items: [] as Exhibit[],
       search: "",
+      itemToRemove: null as Exhibit | null,
     };
   },
   computed: {
@@ -51,6 +52,7 @@ export default defineComponent({
       this.items = await dataService.getAll();
     },
     remove(item: Exhibit) {
+      if (!window.confirm(`Are you sure you want to remove exhibit "${item.name}"?`)) return;
       dataService.delete(item.id);
       this.items.splice(this.items.indexOf(item), 1);
     },
