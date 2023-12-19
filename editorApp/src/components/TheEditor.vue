@@ -1,7 +1,7 @@
 <template>
   <main v-if="dataLoaded">
     <section class="top">
-        <p>id: {{ exhibit.id }}</p>
+        <div class="name"><b>id:</b> {{ exhibit.id }}</div>
         <div class="name">
           <label for="name">Name:</label>
           <input id="name" type="text" v-model="exhibit.name" />
@@ -9,7 +9,7 @@
           <input id="description" type="text" v-model="exhibit.description" />
         </div>
         <div class="saveContainer">
-          <button @click="saveExhibit">Save</button>
+          <button @click="saveExhibit">SAVE</button>
           <!-- <transition name="fade">
             <div v-if="showPopup" class="popup">Saved!</div>
           </transition> -->
@@ -18,9 +18,9 @@
     <section class="bottom">
       <div class="tools">
         <!-- <button @click="consoleLog">Console log</button> -->
-        <button @click="addWidget('gallery')">Add Gallery</button>
-        <button @click="addWidget('text')">Add Text</button>
-        <button @click="addWidget('link')">Add Link</button>
+        <button @click="addWidget('gallery')">ADD GALLERY</button>
+        <button @click="addWidget('text')">ADD TEXT</button>
+        <button @click="addWidget('link')">ADD LINK</button>
         <EditorImageUpload v-model:file="iconFile" name="icon" :src="iconSrc" v-model:removed="iconRemoved" />
         <EditorImageUpload v-model:file="locationFile" name="location" :src="locationSrc" v-model:removed="locationRemoved" />
       </div>
