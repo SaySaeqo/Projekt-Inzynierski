@@ -1,27 +1,22 @@
 <template>
   <div class="container2">
-    <div @click="edit" class="main">
-      <img :src="icon" />
+    <div @click="hidden = !hidden" class="main">
+      <img src="../assets/exampleLink.png" />
       <p>{{ widget.title}}</p>
     </div>
-    <div :class="'editor ' + hidden">
-      <input type="text" v-model="widget.title" />
-      <input type="text" v-model="widget.data" />
-      <!-- <input type="file" @change="handleFileUpload" /> -->
+    <div class="editor" :style="(hidden?'display:none':'')">
+      <input type="text" v-model="widget.title" placeholder="Title" />
+      <input type="text" v-model="widget.data" placeholder="Link" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Exhibit, Widget } from "@/models/Exhibit";
+import { Widget } from "@/models/Exhibit";
 
 export default defineComponent({
   props: {
-    exhibit: {
-      type: Exhibit,
-      required: true,
-    },
     widget: {
       type: Widget,
       required: true,
@@ -29,37 +24,8 @@ export default defineComponent({
   },
   data() {
     return {
-      icon: "",
-      title: "",
-      link: "",
-      hidden: "hidden",
+      hidden: true,
     };
-  },
-  beforeMount() {
-    // get url from firebase
-    this.icon = "img/exampleLink.png";
-    // get title from firebase
-    this.title = this.widget.data + "text";
-    // get link from firebase
-    this.link = "https://www.google.com";
-  },
-  methods: {
-    edit() {
-      if (this.hidden == "hidden") this.hidden = "";
-      else this.hidden = "hidden";
-    },
-    handleFileUpload(event: Event) {
-      const file = (event.target as HTMLInputElement).files?.[0];
-      // Now you can do whatever you want with the file...
-      // example
-      if (file) {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          this.icon = reader.result as string;
-        };
-      }
-    },
   },
 });
 </script>
@@ -92,10 +58,6 @@ p {
 .editor {
   display: flex;
   flex-direction: column;
-}
-
-.hidden {
-  display: none;
 }
 
 .container2 {

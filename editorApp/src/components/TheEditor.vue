@@ -26,7 +26,6 @@
         <BaseWidget
           v-for="widget in exhibit.widgets"
           :key="widget.id"
-          :exhibit="exhibit"
           :widget="widget"
           :changes="widgetChanges"
           @up="moveWidgetUp(widget)"

@@ -16,15 +16,11 @@
 
 <script lang="ts">
 import { defineComponent, PropType, watch } from "vue";
-import { Exhibit, Widget } from "@/models/Exhibit";
+import { Widget } from "@/models/Exhibit";
 import dataService from "../services/DataService";
 
 export default defineComponent({
   props: {
-    exhibit: {
-      type: Exhibit,
-      required: true,
-    },
     widget: {
       type: Widget,
       required: true,

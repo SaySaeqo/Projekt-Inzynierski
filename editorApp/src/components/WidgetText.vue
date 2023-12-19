@@ -1,6 +1,6 @@
 <template>
   <div class="container2">
-    <div @click="edit" class="main">
+    <div @click="hidden = !hidden" class="main">
       <div class="header">
         <img src="../assets/exampleText.png" />
         <p>{{ widget.title }}</p>
@@ -8,23 +8,19 @@
       <p class="text">{{ widget.data }}</p>
       
     </div>
-    <div :class="'editor ' + hidden">
-      <input type="text" v-model="widget.title" />
-      <textarea type="text" v-model="widget.data" />
+    <div class="editor" :style="(hidden?'display:none':'')">
+      <input type="text" v-model="widget.title" placeholder="Title" />
+      <textarea type="text" v-model="widget.data" placeholder="Text" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Exhibit, Widget } from "@/models/Exhibit";
+import { Widget } from "@/models/Exhibit";
 
 export default defineComponent({
   props: {
-    exhibit: {
-      type: Exhibit,
-      required: true,
-    },
     widget: {
       type: Widget,
       required: true,
@@ -32,31 +28,8 @@ export default defineComponent({
   },
   data() {
     return {
-      icon: "",
-      title: "",
-      text: "",
-      hidden: "hidden",
+      hidden: true,
     };
-  },
-  beforeMount() {
-    this.title = this.widget.data;
-    // get link from firebase
-    this.text = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
-    totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-    Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,
-    sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
-    Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit,
-    sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
-    Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam,
-    nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur,
-    vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?`;
-  },
-  methods: {
-    edit() {
-      if (this.hidden == "hidden") this.hidden = "";
-      else this.hidden = "hidden";
-    },
   },
 });
 </script>
@@ -101,10 +74,6 @@ export default defineComponent({
 .editor {
   display: flex;
   flex-direction: column;
-}
-
-.hidden {
-  display: none;
 }
 
 .container2 {
