@@ -19,8 +19,8 @@
         <button @click="addWidget('gallery')">Add Gallery</button>
         <button @click="addWidget('text')">Add Text</button>
         <button @click="addWidget('link')">Add Link</button>
-        <EditorImageUpload v-model="iconFile" name="icon" :src="iconSrc" />
-        <EditorImageUpload v-model="locationFile" name="location" :src="locationSrc" />
+        <EditorImageUpload v-model:file="iconFile" name="icon" :src="iconSrc" v-model:removed="iconRemoved" />
+        <EditorImageUpload v-model:file="locationFile" name="location" :src="locationSrc" v-model:removed="locationRemoved" />
       </div>
       <div class="preview">
         <BaseWidget
@@ -72,6 +72,8 @@ export default defineComponent({
       locationSrc: "",
       dataLoaded: false,
       showPopup: false,
+      iconRemoved: false,
+      locationRemoved: false,
     };
   },
   async created() {
@@ -133,7 +135,9 @@ export default defineComponent({
             this.iconSrc
           );
           this.exhibit.icon = name;
-          this.iconFile = null;
+        } else if (this.iconRemoved) {
+          await dataService.removeImage(this.iconSrc);
+          this.exhibit.icon = "";
         }
         if (this.locationFile) {
           const name = await dataService.updateImage(
@@ -142,7 +146,9 @@ export default defineComponent({
             this.locationSrc
           );
           this.exhibit.location = name;
-          this.locationFile = null;
+        } else if (this.locationRemoved) {
+          await dataService.removeImage(this.locationSrc);
+          this.exhibit.location = "";
         }
 
 
@@ -159,20 +165,20 @@ export default defineComponent({
             const name = await dataService.addImage(this.exhibit.id, file);
             this.exhibit.widgets.find(widget => widget.id === key)!.addImageURL(name);
           }
-          gallery.delete("added");
 
           for (const image of removed) {
             if (! await dataService.removeImage(image)) continue;
             this.exhibit.widgets.find(widget => widget.id === key)!.removeImageURL(dataService.getNameFromLink(image) as string);
           }
-          gallery.delete("removed");
         }
         await dataService.update(this.exhibit);
 
-        this.showPopup = true;
-        setTimeout(() => {
-          this.showPopup = false;
-        }, 500); // Change this to control how long the popup is visible
+        this.$router.go(0);
+
+        // this.showPopup = true;
+        // setTimeout(() => {
+        //   this.showPopup = false;
+        // }, 500); // Change this to control how long the popup is visible
       }
     },
   },

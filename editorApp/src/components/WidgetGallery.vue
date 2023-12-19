@@ -41,17 +41,9 @@ export default defineComponent({
     };
   },
   async created() {
-    this.initialize();
-  },
-  mounted() {
-    watch(
-      () => this.changes.get(this.widget.id)?.get("added"),
-      (newVal, oldVal) => {
-        if (Array.isArray(oldVal) && oldVal.length > 0 && newVal === undefined) {
-          this.initialize();
-        }
-      }
-    );
+    for (const image of this.widget.imagesURLs) {
+      this.gallery.push(await dataService.getImage(image));
+    }
   },
   unmounted() {
     for (const url of this.addedUrls.keys()) {
@@ -59,16 +51,6 @@ export default defineComponent({
     }
   },
   methods: {
-    async initialize() {
-      this.gallery = [];
-      for (const url of this.addedUrls.keys()) {
-        URL.revokeObjectURL(url);
-      }
-      this.addedUrls = new Map<string, File>();
-      for (const image of this.widget.imagesURLs) {
-        this.gallery.push(await dataService.getImage(image));
-      }
-    },
     remove(image: string) {
       const myChanges = this.changes.get(this.widget.id)!;
 
