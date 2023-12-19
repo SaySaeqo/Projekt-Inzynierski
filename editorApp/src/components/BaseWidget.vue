@@ -56,9 +56,13 @@ export default defineComponent({
   flex-direction: column;
   align-self: stretch;
   flex-basis: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .container {
   display: flex;
+  position: relative;
 }
 </style>
