@@ -2,8 +2,8 @@
   <div class="extra">
     <div class="item" v-for="x in [...extras, newExtra]" :key="x.key">
       <label v-if="x !== newExtra" :for="'extra-'+x.key">{{ x.key }}</label>
-      <input v-else type="text" v-model="x.key" />
-      <input :id="'extra-'+x.key" type="text" v-model="x.value" />
+      <input v-else type="text" v-model.lazy="x.key" />
+      <input :id="'extra-'+x.key" type="text" v-model.lazy="x.value" />
       <select v-model="x.linkId">
         <option v-for="exhibit in exhibits" :key="exhibit.id" :value="exhibit.id">
           {{ exhibit.name }}
@@ -64,6 +64,7 @@ export default defineComponent({
 .extra {
   display: flex;
   flex-direction: column;
+  min-width: 20em;
 }
 
 .item {
@@ -74,6 +75,10 @@ export default defineComponent({
 }
 
 input {
+  min-width: 0;
+}
+
+select {
   min-width: 0;
 }
 
