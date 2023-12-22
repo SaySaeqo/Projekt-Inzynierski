@@ -9,15 +9,13 @@
 
         <item
             android:id="@+id/nav_list"
-            android:title="List"/>
+            android:title="@string/nav_list"/>
         <item
             android:id="@+id/nav_scanner"
-            android:title="QR scanner"/>
+            android:title="@string/nav_qr_scanner"/>
+
         <item
-            android:id="@+id/nav_test"
-            android:title="test"/>
-        <item
-            android:id="@+id/menu_none"
+            android:id="@+id/nav_none"
             android:title=""
             android:visible="false"/>
 

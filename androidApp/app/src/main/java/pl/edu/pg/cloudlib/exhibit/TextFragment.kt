@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import pl.edu.pg.cloudlib.Bundles
 import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.FragmentTextBinding
 
@@ -23,14 +24,10 @@ class TextFragment : Fragment() {
     ): View {
         binding = FragmentTextBinding.inflate(inflater, container, false)
 
-        activity?.title = getString(R.string.section_page_title)
+        activity?.title = arguments?.getString(Bundles.SECTION_TITLE) ?: getString(R.string.section_page_title)
 
-        binding.textView.text = arguments?.getString(BUNDLE_KEY) ?: "Error: no message arrived"
+        binding.textView.text = arguments?.getString(Bundles.SECTION_TEXT) ?: "Error: no message arrived"
 
         return binding.root
-    }
-
-    companion object {
-        const val BUNDLE_KEY = "section"
     }
 }

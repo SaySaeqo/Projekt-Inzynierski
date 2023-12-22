@@ -18,14 +18,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_action_filter"
+            android:src="@drawable/baseline_exit_to_app_24"
             android:id="@+id/icon"
-            />
+            android:contentDescription="@string/widget_link_icon_view_image" />
         <TextView
             android:id="@+id/text_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Link"
+            android:text="@string/widget_link_default_title"
             app:layout_constraintStart_toEndOf="@id/icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

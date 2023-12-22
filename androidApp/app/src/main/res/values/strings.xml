@@ -39,4 +39,14 @@
     <string name="aim">Aim</string>
     <string name="content_description_aim">Buttom to aim exhibit on exhibition.</string>
     <string name="aim_page_title">Aim exhibit!</string>
+    <string name="starting_camera_preview">Starting preview</string>
+    <string name="camera_permission_request_denied">Permission request denied</string>
+    <string name="camera_qr_code_not_from_defined_host">Invalid QR code</string>
+    <string name="nav_list">List</string>
+    <string name="nav_qr_scanner">QR scanner</string>
+    <string name="location_image_view_content_description">Image of the location of the exhibit</string>
+    <string name="widget_link_icon_view_image">Icon for link widget.</string>
+    <string name="widget_link_default_title">Link</string>
+    <string name="widget_gallery_main_image">Main gallery widget image</string>
+    <string name="galery_widget_item_image">Galery item image.</string>
 </resources>

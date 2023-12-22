@@ -1,38 +1,27 @@
-package pl.edu.pg.cloudlib
+package pl.edu.pg.cloudlib.database
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.SystemClock.sleep
 import android.util.Log
+import android.widget.ImageView
+import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Filter
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
-import com.google.firebase.storage.storage
-import kotlinx.coroutines.tasks.await
 
-class DBSingleton private constructor() {
-    private val db = Firebase.firestore
-    private val storage = Firebase.storage
+object DBSingleton {
+    private val db get() = Firebase.firestore
+    private val storage get()  = Firebase.storage
 
-    companion object {
-        private val dbCollectionName = "exhibits"
-        private var instance = DBSingleton()
-        const val TAG = "DataBase"
-        fun getInstance() : DBSingleton{
-            return instance;
-        }
-    }
+    private const val dbCollectionName = "exhibits"
+    private const val TAG = "DataBase"
 
     fun add(name: String, description: String)
     {
-        var exhibit = hashMapOf(
+        val exhibit = hashMapOf(
             "name" to name,
             "description" to description
         )
@@ -74,13 +63,13 @@ class DBSingleton private constructor() {
     }
 
     fun getAll(): Task<QuerySnapshot> {
-        var result = db.collection(dbCollectionName).orderBy("name").get();
+        val result = db.collection(dbCollectionName).orderBy("name").get();
 
         return result;
     }
 
     fun getOne(id: String): Task<DocumentSnapshot> {
-        var result = db.collection(dbCollectionName).document(id).get();
+        val result = db.collection(dbCollectionName).document(id).get();
 
         return result
     }
@@ -90,5 +79,38 @@ class DBSingleton private constructor() {
         val imageRef = imagesRef.child(name)
 
         return imageRef
+    }
+
+    fun forAll(function: (Exhibit) -> Unit) {
+       getAll().addOnSuccessListener { result ->
+                for (document in result) {
+                    val exh = Exhibit.fromFirebaseConverter(document)
+                    function(exh)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
+    }
+
+    fun forOne(id: String, onSuccess: (Exhibit) -> Unit) {
+        getOne(id).addOnSuccessListener { result ->
+            val exh = Exhibit.fromFirebaseConverter(result)
+            onSuccess(exh)
+        }
+        .addOnFailureListener { exception ->
+            Log.w(TAG, "Error getting document with id ${id}.", exception)
+        }
+    }
+
+    fun loadImageInto(name: String, imageView: ImageView) {
+        val imageRef = getImage(name)
+        imageRef.downloadUrl.addOnSuccessListener {
+            Glide.with(imageView.context)
+                .load(it)
+                .into(imageView)
+        }.addOnFailureListener(){
+            Log.d(TAG, "Failed to load image")
+        }
     }
 }

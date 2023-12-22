@@ -1,13 +1,13 @@
 package pl.edu.pg.cloudlib
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import pl.edu.pg.cloudlib.databinding.ActivityMainBinding
@@ -27,90 +27,38 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(binding.topAppBar)
 
         binding.navView.setNavigationItemSelectedListener {
             when(it.itemId){
-                R.id.nav_list -> supportFragmentManager.commit {
-                    setReorderingAllowed(true)
-                    replace<ListFragment>(binding.fragmentContainer.id)
-                    addToBackStack(null)
-                }
-                R.id.nav_scanner -> supportFragmentManager.commit {
-                    setReorderingAllowed(true)
-                    replace<QRScannerFragment>(binding.fragmentContainer.id)
-                    addToBackStack(null)
-                }
+                R.id.nav_list -> redirect<ListFragment>()
+                R.id.nav_scanner -> redirect<QRScannerFragment>()
             }
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
 
-        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout,
-            binding.topAppBar,R.string.open_nav, R.string.close_nav
-        )
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
+        ActionBarDrawerToggle(this, binding.drawerLayout,
+            binding.topAppBar, R.string.open_nav, R.string.close_nav
+        ).let {
+            binding.drawerLayout.addDrawerListener(it)
+            it.syncState()
+        }
 
         if (savedInstanceState == null){
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                replace<ListFragment>(binding.fragmentContainer.id)
-            }
+            redirect<ListFragment>(backStack = false)
             binding.navView.setCheckedItem(R.id.nav_list)
         }
 
-        supportFragmentManager.setFragmentResultListener(ExhibitFragment.BUNDLE_KEY, this)
-        { _, bundle ->
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                replace<ExhibitFragment>(binding.fragmentContainer.id, args = bundle)
-                addToBackStack(null)
-            }
-            binding.navView.setCheckedItem(R.id.menu_none)
-        }
-        supportFragmentManager.setFragmentResultListener(TextFragment.BUNDLE_KEY, this)
-        { _, bundle ->
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                replace<TextFragment>(binding.fragmentContainer.id, args = bundle)
-                addToBackStack(null)
-            }
-            binding.navView.setCheckedItem(R.id.menu_none)
-        }
-        supportFragmentManager.setFragmentResultListener(SearchFragment.BUNDLE_KEY, this)
-        { _, bundle ->
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                replace<ListFragment>(binding.fragmentContainer.id, args = bundle)
-                addToBackStack(null)
-            }
-            binding.navView.setCheckedItem(R.id.nav_list)
-        }
-        supportFragmentManager.setFragmentResultListener(ExhibitFragment.AIM_KEY, this)
-        { _, bundle ->
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                replace<LocationFragment>(binding.fragmentContainer.id, args = bundle)
-                addToBackStack(null)
-            }
-            binding.navView.setCheckedItem(R.id.menu_none)
-        }
+        setRedirectListener<ExhibitFragment>(Bundles.EXHIBIT_ID)
+        setRedirectListener<TextFragment>(Bundles.SECTION_TEXT)
+        setRedirectListener<SearchFragment>(Bundles.REDIRECT_TO_SEARCH)
+        setRedirectListener<LocationFragment>(Bundles.LOCATION_URL)
+        setRedirectListener<ListFragment>(Bundles.SEARCH_QUERY){ binding.navView.setCheckedItem(R.id.nav_list) }
 
-        val action: String? = intent?.action
-        val data: Uri? = intent?.data
-
-        if (action == Intent.ACTION_VIEW && data != null) {
-            val id = data.getQueryParameter("id")
-            if (id != null) {
-                supportFragmentManager.commit {
-                    setReorderingAllowed(true)
-                    replace<ExhibitFragment>(binding.fragmentContainer.id,
-                        args = bundleOf(ExhibitFragment.BUNDLE_KEY to id))
-                    addToBackStack(null)
-                }
-                binding.navView.setCheckedItem(R.id.menu_none)
+        if (intent?.action == Intent.ACTION_VIEW) {
+            intent?.data?.getQueryParameter("id")?.let{
+                redirect<ExhibitFragment>(bundleOf(Bundles.EXHIBIT_ID to it))
             }
         }
     }
@@ -118,17 +66,24 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.top_app_bar, menu)
-
-        menu?.findItem(R.id.search)?.setOnMenuItemClickListener{
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                replace<SearchFragment>(binding.fragmentContainer.id)
-                addToBackStack(null)
-            }
-            binding.navView.setCheckedItem(R.id.menu_none)
-            true
-        }
         return true
+    }
+
+    private inline fun <reified T> redirect(bundle: Bundle? = null, backStack: Boolean = true) where T: Fragment {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<T>(binding.fragmentContainer.id, args = bundle)
+            if (backStack) addToBackStack(null)
+        }
+        binding.navView.setCheckedItem(R.id.nav_none)
+    }
+
+    private inline fun <reified T> setRedirectListener(bundleKey: String, crossinline afterRedirect: () -> Unit = {}) where T: Fragment {
+        supportFragmentManager.setFragmentResultListener(bundleKey, this)
+        { _, bundle ->
+            redirect<T>(bundle)
+            afterRedirect()
+        }
     }
 
     companion object {

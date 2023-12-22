@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import pl.edu.pg.cloudlib.Bundles
 import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.FragmentSearchBinding
 
@@ -28,16 +30,10 @@ class SearchFragment : Fragment() {
 
         binding.searchButton.setOnClickListener {
             val query = binding.searchInput.text.toString()
-            val bundle = Bundle()
-            bundle.putString(BUNDLE_KEY, query)
-            setFragmentResult(BUNDLE_KEY, bundle)
+            setFragmentResult(Bundles.SEARCH_QUERY, bundleOf(Bundles.SEARCH_QUERY to query))
         }
 
         return binding.root
-    }
-
-    companion object {
-        const val BUNDLE_KEY = "search"
     }
 
 }

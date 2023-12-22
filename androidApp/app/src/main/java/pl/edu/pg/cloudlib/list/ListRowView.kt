@@ -5,7 +5,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.os.bundleOf
+import pl.edu.pg.cloudlib.Bundles
 import pl.edu.pg.cloudlib.databinding.ViewListRowBinding
+import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
 
 /**
  * TODO: document your custom view class.
@@ -13,7 +16,7 @@ import pl.edu.pg.cloudlib.databinding.ViewListRowBinding
 class ListRowView : FrameLayout {
 
     private lateinit var binding: ViewListRowBinding
-    var id = "";
+    var id = ""
     var title
         get() = binding.title.text
         set(value) = binding.title.setText(value)
@@ -26,7 +29,7 @@ class ListRowView : FrameLayout {
         get() = binding.image
         private set(value) {}
 
-    var fragmentMessage: String? = null
+    val bundle get() = bundleOf(Bundles.EXHIBIT_ID to id)
 
     constructor(context: Context) : super(context) {
         init(null, 0)

@@ -5,4 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".exhibit.LocationFragment">
 
+    <ImageView
+        android:id="@+id/location_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/space"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/location_image_view_content_description"
+        />
+
 </FrameLayout>

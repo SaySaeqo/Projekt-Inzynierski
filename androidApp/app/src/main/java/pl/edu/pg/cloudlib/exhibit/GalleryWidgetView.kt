@@ -1,17 +1,21 @@
 package pl.edu.pg.cloudlib.exhibit
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.constraintlayout.widget.Constraints
 import com.bumptech.glide.Glide
-import pl.edu.pg.cloudlib.DBSingleton
+import pl.edu.pg.cloudlib.database.DBSingleton
 import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.ViewWidgetGalleryBinding
 
@@ -21,29 +25,17 @@ import pl.edu.pg.cloudlib.databinding.ViewWidgetGalleryBinding
 class GalleryWidgetView : FrameLayout {
 
     private lateinit var binding: ViewWidgetGalleryBinding
-    private val db = DBSingleton.getInstance()
-    private var actual = 0;
 
     var images: Array<String> = arrayOf()
         set(value) {
             field = value
 
             val constraintSet = ConstraintSet().apply { clone(binding.scrollable) }
-
             var lastImageId = ConstraintSet.PARENT_ID
 
-            var num = 0;
             value.forEach {
-                val imageView = createGalleryItemView(num)
-                num++;
+                val imageView = createGalleryItemView(it)
                 binding.scrollable.addView(imageView)
-                db.getImage(it).downloadUrl.addOnSuccessListener {it1 ->
-                    Glide.with(context)
-                        .load(it1)
-                        .into(imageView)
-                }.addOnFailureListener(){
-                    Log.d("Gallery", "Failed to load image")
-                }
 
                 constraintSet.apply {
                     setDimensionRatio(imageView.id, "1:1")
@@ -68,35 +60,27 @@ class GalleryWidgetView : FrameLayout {
                 applyTo(binding.scrollable)
             }
 
-
-            db.getImage(value[0]).downloadUrl.addOnSuccessListener {it1 ->
-                Glide.with(context)
-                    .load(it1)
-                    .into(binding.image)
-            }.addOnFailureListener(){
-                Log.d("Gallery", "Failed to load image")
-            }
+            DBSingleton.loadImageInto(value[0], binding.image)
         }
 
-    private fun createGalleryItemView(resourceId : Int): ImageView {
+    private fun createGalleryItemView(image: String): ImageView {
         return ImageView(context).apply {
             id = View.generateViewId()
             scaleType = ImageView.ScaleType.CENTER_CROP
             layoutParams = LinearLayout.LayoutParams(
                 0, ViewGroup.LayoutParams.MATCH_PARENT
             )
-            setOnClickListener{ _ ->
-                db.getImage(images[resourceId]).downloadUrl.addOnSuccessListener {it1 ->
-                    Glide.with(context)
-                        .load(it1)
-                        .into(binding.image)
-                }.addOnFailureListener(){
-                    Log.d("Gallery", "Failed to load image")
-                }
-            }
-            setBackgroundResource(R.drawable.inner_border)
+            DBSingleton.loadImageInto(image, this)
+            setOnClickListener{ _ -> DBSingleton.loadImageInto(image, binding.image) }
+            val padding = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                4f,
+                resources.displayMetrics).toInt()
+            setPadding(padding, padding, padding, padding)
+            foreground = AppCompatResources.getDrawable(context, R.drawable.inner_border)
         }
     }
+
     constructor(context: Context) : super(context) {
         init(null, 0)
     }

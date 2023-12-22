@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.FrameLayout
 import androidx.core.os.bundleOf
+import pl.edu.pg.cloudlib.Bundles
 import pl.edu.pg.cloudlib.databinding.ViewWidgetTextBinding
 
 class TextWidgetView: FrameLayout {
@@ -20,10 +21,13 @@ class TextWidgetView: FrameLayout {
             binding.textView.text = value
         }
 
+    var title: String = ""
+
     var button: Button
         get() = binding.button
         private set(value) {}
 
+    val bundle get() = bundleOf(Bundles.SECTION_TEXT to text, Bundles.SECTION_TITLE to title)
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -46,9 +50,5 @@ class TextWidgetView: FrameLayout {
         binding = ViewWidgetTextBinding.inflate(LayoutInflater.from(context))
         addView(binding.root)
 
-    }
-
-    fun getBundle(): Bundle {
-        return bundleOf(TextFragment.BUNDLE_KEY to text)
     }
 }

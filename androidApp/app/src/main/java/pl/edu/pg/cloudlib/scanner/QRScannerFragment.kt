@@ -21,6 +21,7 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 import com.google.zxing.BarcodeFormat
+import pl.edu.pg.cloudlib.Bundles
 import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.FragmentQrscannerBinding
 import pl.edu.pg.cloudlib.exhibit.ExhibitFragment
@@ -66,7 +67,7 @@ class QRScannerFragment : Fragment() {
         val sv = binding.scannerView
         sv.setOnClickListener{
             codeScanner.startPreview()
-            Toast.makeText(act.baseContext,"Starting preview", Toast.LENGTH_SHORT).show()
+            Toast.makeText(act.baseContext, getString(R.string.starting_camera_preview), Toast.LENGTH_SHORT).show()
         }
 
         return binding.root
@@ -81,7 +82,7 @@ class QRScannerFragment : Fragment() {
                     // success
                 } else {
                     Toast.makeText(context,
-                        "Permission request denied",
+                        getString(R.string.camera_permission_request_denied),
                         Toast.LENGTH_SHORT).show()
                 }
             }.launch(permission)
@@ -89,18 +90,18 @@ class QRScannerFragment : Fragment() {
     }
 
     private fun sendMessage(uri: Uri){
-        if (uri.host != "saysaeqo.pythonanywhere.com" || uri.path != "/cloudlib") {
+        if (uri.host != HOST || uri.path != PATH) {
             Toast.makeText(context,
-                "Invalid QR code",
+                getString(R.string.camera_qr_code_not_from_defined_host),
                 Toast.LENGTH_SHORT).show()
             codeScanner.releaseResources()
             return
         }
-        val id = uri.getQueryParameter("id")
+        val id = uri.getQueryParameter(QUERY_PARAM)
         if(id != null){
             setFragmentResult(
-                ExhibitFragment.BUNDLE_KEY,
-                bundleOf(ExhibitFragment.BUNDLE_KEY to id))
+                Bundles.EXHIBIT_ID,
+                bundleOf(Bundles.EXHIBIT_ID to id))
         }
     }
 
@@ -116,6 +117,9 @@ class QRScannerFragment : Fragment() {
 
     companion object {
         private const val TAG = "QRScanner"
+        private const val HOST = "saysaeqo.pythonanywhere.com"
+        private const val PATH = "/cloudlib"
+        private const val QUERY_PARAM = "id"
     }
 
 
