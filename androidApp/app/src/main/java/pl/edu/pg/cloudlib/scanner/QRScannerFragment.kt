@@ -97,11 +97,10 @@ class QRScannerFragment : Fragment() {
             codeScanner.releaseResources()
             return
         }
-        val id = uri.getQueryParameter(QUERY_PARAM)
-        if(id != null){
+        uri.getQueryParameter(QUERY_PARAM)?.let {
             setFragmentResult(
                 Bundles.EXHIBIT_ID,
-                bundleOf(Bundles.EXHIBIT_ID to id))
+                bundleOf(Bundles.EXHIBIT_ID to it))
         }
     }
 
