@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/border"
+    android:foreground="@drawable/border"
+    android:background="@color/pg_mid_blue"
     >
 
     <ImageView
@@ -11,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:scaleType="fitCenter"
+        android:background="@color/white"
         android:foreground="@drawable/inner_border"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"

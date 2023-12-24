@@ -6,4 +6,7 @@
     <color name="light_blue_600">#FF039BE5</color>
     <color name="gray_400">#FFBDBDBD</color>
     <color name="gray_600">#FF757575</color>
+    <color name="pg_light_blue">#E4F1FE</color>
+    <color name="pg_dark_blue">#153b5a</color>
+    <color name="pg_mid_blue">#cfe5ee</color>
 </resources>

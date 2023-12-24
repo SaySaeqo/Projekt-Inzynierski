@@ -77,6 +77,7 @@ class GalleryWidgetView : FrameLayout {
                 4f,
                 resources.displayMetrics).toInt()
             setPadding(padding, padding, padding, padding)
+            setBackgroundColor(AppCompatResources.getColorStateList(context, R.color.white).defaultColor)
             foreground = AppCompatResources.getDrawable(context, R.drawable.inner_border)
         }
     }

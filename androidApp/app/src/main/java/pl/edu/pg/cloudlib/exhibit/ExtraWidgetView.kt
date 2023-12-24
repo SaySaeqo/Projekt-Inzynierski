@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.ViewWidgetExtraBinding
@@ -78,6 +79,7 @@ class ExtraWidgetView : FrameLayout {
     private fun appendExtra(key: String, value: String): Button {
         extra += Pair(key, value)
         val button = Button(context)
+        button.isEnabled = false
 
         // add new row to table
         val row = TableRow(context).apply {
@@ -96,25 +98,24 @@ class ExtraWidgetView : FrameLayout {
     }
 
     private fun applyStyling(withText: String, textView: TextView): TextView {
-        val params = TableRow.LayoutParams(
-            TableRow.LayoutParams.MATCH_PARENT,
-            TableRow.LayoutParams.WRAP_CONTENT,
-            1f
-        )
-        val padding = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            5f,
-            resources.displayMetrics
-        ).toInt()
         return textView.apply {
-            layoutParams = params
+            layoutParams = TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT,
+                1f
+            )
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             setTextIsSelectable(true)
             // set padding to 5dp
-            setPadding(padding, padding, padding, padding)
+//            val padding = TypedValue.applyDimension(
+//                TypedValue.COMPLEX_UNIT_DIP,
+//                3f,
+//                resources.displayMetrics
+//            ).toInt()
+            //setPadding(padding, padding, padding, padding)
             //set background color to 1 of predefined colors
-            setBackgroundColor(ContextCompat.getColor(context, R.color.white))
             textAlignment = TEXT_ALIGNMENT_CENTER
+            setTextColor(ContextCompat.getColor(context, R.color.black))
             text = withText
         }
     }

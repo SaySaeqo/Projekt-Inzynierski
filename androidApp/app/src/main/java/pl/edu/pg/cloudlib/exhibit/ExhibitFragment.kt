@@ -59,8 +59,9 @@ class ExhibitFragment : Fragment() {
                 }
 
                 for(e in exhibit.extra){
-                    binding.exampleExtra.setExtra(e.key, e.value).setOnClickListener { _ ->
-                        if(e.linkId != "") {
+                    binding.exampleExtra.setExtra(e.key, e.value).apply {
+                        isEnabled = e.linkId != "" && e.linkId != id
+                        setOnClickListener { _ ->
                             setFragmentResult(Bundles.EXHIBIT_ID, bundleOf(Bundles.EXHIBIT_ID to e.linkId))
                         }
                     }

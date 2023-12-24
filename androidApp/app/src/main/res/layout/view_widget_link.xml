@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:padding="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/border"
+    android:foreground="@drawable/border"
+    android:background="@color/pg_mid_blue"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
