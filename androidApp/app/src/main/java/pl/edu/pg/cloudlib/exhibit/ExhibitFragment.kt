@@ -28,14 +28,13 @@ class ExhibitFragment : Fragment() {
         binding = FragmentExhibitBinding.inflate(inflater, container, false)
 
         activity?.title = getString(R.string.exhibit_page_title)
-        val id = arguments?.getString(Bundles.EXHIBIT_ID) ?: "Error: no id arrived"
-        binding.exampleText.text = id
-
-        if(id != ""){
+        arguments?.getString(Bundles.EXHIBIT_ID)?.let{ id ->
             DBSingleton.forOne(id) { exhibit ->
                 this.exhibit = exhibit
                 setHasOptionsMenu(true)
                 activity?.title = exhibit.name
+                binding.title.text = exhibit.name
+                binding.description.text = exhibit.description
 
                 for(w in exhibit.widgets){
                     when (w.type) {
