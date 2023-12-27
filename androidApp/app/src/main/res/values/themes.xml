@@ -3,6 +3,7 @@
     <style name="Base.Theme.CloudLib" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorSecondary">@color/pg_light_blue</item>
         <item name="colorPrimary">@color/pg_dark_blue</item>
+        <item name="colorOnPrimary">@color/pg_light_blue</item>
         <item name="colorControlNormal">@color/pg_light_blue</item>
         <item name="backgroundColor">@color/white</item>
         <item name="textFillColor">@color/black</item>
