@@ -1,20 +1,17 @@
 package pl.edu.pg.cloudlib.exhibit
 
 import android.content.Context
-import android.graphics.PorterDuff
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.constraintlayout.widget.Constraints
-import com.bumptech.glide.Glide
+import androidx.core.view.setMargins
 import pl.edu.pg.cloudlib.database.DBSingleton
 import pl.edu.pg.cloudlib.R
 import pl.edu.pg.cloudlib.databinding.ViewWidgetGalleryBinding
@@ -67,8 +64,9 @@ class GalleryWidgetView : FrameLayout {
         return ImageView(context).apply {
             id = View.generateViewId()
             scaleType = ImageView.ScaleType.CENTER_CROP
-            layoutParams = LinearLayout.LayoutParams(
-                0, ViewGroup.LayoutParams.MATCH_PARENT
+            layoutParams = ConstraintLayout.LayoutParams(
+                0,
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
             )
             DBSingleton.loadImageInto(image, this)
             setOnClickListener{ _ -> DBSingleton.loadImageInto(image, binding.image) }
@@ -77,8 +75,12 @@ class GalleryWidgetView : FrameLayout {
                 4f,
                 resources.displayMetrics).toInt()
             setPadding(padding, padding, padding, padding)
-            setBackgroundColor(AppCompatResources.getColorStateList(context, R.color.white).defaultColor)
-            foreground = AppCompatResources.getDrawable(context, R.drawable.inner_border)
+//            val margin = TypedValue.applyDimension(
+//                TypedValue.COMPLEX_UNIT_DIP,
+//                2f,
+//                resources.displayMetrics).toInt()
+//            (layoutParams as ConstraintLayout.LayoutParams).setMargins(0, margin, 0, margin)
+            background = AppCompatResources.getDrawable(context, R.drawable.widget_element_background)
         }
     }
 
@@ -102,6 +104,10 @@ class GalleryWidgetView : FrameLayout {
 
         binding = ViewWidgetGalleryBinding.inflate(LayoutInflater.from(context))
         addView(binding.root)
+    }
+
+    companion object {
+        private const val TAG = "GalleryWidgetView"
     }
 
 }

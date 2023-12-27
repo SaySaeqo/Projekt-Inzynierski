@@ -18,8 +18,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:id="@+id/text_view"
-                    android:foreground="@drawable/border"
-                    android:background="@color/pg_mid_blue"
+                    android:background="@drawable/widget_background"
                     android:padding="20dp"
                     android:textIsSelectable="true"
                     />

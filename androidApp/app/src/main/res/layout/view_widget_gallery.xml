@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:foreground="@drawable/border"
-    android:background="@color/pg_mid_blue"
+    android:background="@drawable/widget_background"
     >
 
     <ImageView
@@ -12,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:scaleType="fitCenter"
-        android:background="@color/white"
-        android:foreground="@drawable/inner_border"
+        android:background="@drawable/widget_element_background"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
@@ -28,7 +26,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:background="?attr/textFillColor"
             android:id="@+id/scrollable">
 <!--            <ImageButton-->
 <!--                android:layout_width="0dp"-->
