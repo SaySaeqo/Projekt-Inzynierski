@@ -26,6 +26,7 @@ class TextFragment : Fragment() {
 
         activity?.title = arguments?.getString(Bundles.SECTION_TITLE) ?: getString(R.string.section_page_title)
 
+        binding.title.text = arguments?.getString(Bundles.SECTION_TITLE) ?: ""
         binding.textView.text = arguments?.getString(Bundles.SECTION_TEXT) ?: "Error: no message arrived"
 
         return binding.root

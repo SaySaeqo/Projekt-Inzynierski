@@ -22,6 +22,10 @@ class TextWidgetView: FrameLayout {
         }
 
     var title: String = ""
+        set(value) {
+            field = value
+            binding.title.text = value
+        }
 
     var button: Button
         get() = binding.button
