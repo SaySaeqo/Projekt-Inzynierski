@@ -55,6 +55,10 @@ class ExtraWidgetView : FrameLayout {
             binding.scrollView.layoutParams = params
         }
 
+        // shown when there is no extra data
+        binding.header.text = context.getString(R.string.no_extra_information)
+        binding.btnToggle.visibility = GONE
+
     }
 
     /**
@@ -72,6 +76,11 @@ class ExtraWidgetView : FrameLayout {
             button = appendExtra(key, value)
         }
         extra += Pair(key, value)
+
+        if (extra.isNotEmpty()) {
+            binding.header.text = context.getString(R.string.extra_information)
+            binding.btnToggle.visibility = VISIBLE
+        }
 
         return button
     }
