@@ -33,14 +33,18 @@ class Exhibit {
         this.location = "location"
     }
 
+    override fun toString(): String {
+        return "Exhibit(id='$id', name='$name', description='$description', extra=${extra.contentToString()}, widgets=${widgets.contentToString()}, icon='$icon', location='$location')"
+    }
+
     companion object {
         fun fromFirebaseConverter(doc: DocumentSnapshot): Exhibit {
             val newExhibit = Exhibit()
             newExhibit.id = doc.id
             newExhibit.name = doc.data?.get("name").toString()
             newExhibit.description = doc.data?.get("description").toString()
-            newExhibit.widgets = Gson().fromJson(doc.data?.get("widgets").toString(), object : TypeToken<Array<Widget>>() {}.type)
-            newExhibit.extra = Gson().fromJson(doc.data?.get("extra").toString(), object : TypeToken<Array<ExhibitPair>>() {}.type)
+            newExhibit.widgets = Gson().fromJson(doc.data?.get("widgets").toString(), object : TypeToken<Array<Widget>>() {}.type)?: arrayOf()
+            newExhibit.extra = Gson().fromJson(doc.data?.get("extra").toString(), object : TypeToken<Array<ExhibitPair>>() {}.type)?: arrayOf()
             newExhibit.icon = doc.data?.get("icon").toString()
             newExhibit.location = doc.data?.get("location").toString()
 

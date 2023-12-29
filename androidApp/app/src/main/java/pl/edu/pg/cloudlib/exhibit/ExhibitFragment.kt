@@ -2,6 +2,7 @@ package pl.edu.pg.cloudlib.exhibit
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -82,5 +83,9 @@ class ExhibitFragment : Fragment() {
                 true
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "ExhibitFragment"
     }
 }

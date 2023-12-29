@@ -69,7 +69,7 @@ object DBSingleton {
     }
 
     fun getOne(id: String): Task<DocumentSnapshot> {
-        val result = db.collection(dbCollectionName).document(id).get();
+        val result = db.collection(dbCollectionName).document(id).get()
 
         return result
     }
@@ -95,6 +95,7 @@ object DBSingleton {
 
     fun forOne(id: String, onSuccess: (Exhibit) -> Unit) {
         getOne(id).addOnSuccessListener { result ->
+            if (!result.exists()) return@addOnSuccessListener
             val exh = Exhibit.fromFirebaseConverter(result)
             onSuccess(exh)
         }
